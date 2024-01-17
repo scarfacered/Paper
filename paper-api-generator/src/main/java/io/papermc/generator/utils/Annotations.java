@@ -3,7 +3,6 @@ package io.papermc.generator.utils;
 import com.squareup.javapoet.AnnotationSpec;
 import java.util.List;
 
-import com.squareup.javapoet.ClassName;
 import io.papermc.paper.generated.GeneratedFrom;
 import net.minecraft.SharedConstants;
 import org.bukkit.MinecraftExperimental;
@@ -13,12 +12,15 @@ import org.jetbrains.annotations.Nullable;
 
 public final class Annotations {
 
-    public static List<AnnotationSpec> experimentalAnnotations(final MinecraftExperimental.Requires requiredFeatureFlag) {
+    public static List<AnnotationSpec> experimentalAnnotations(final String version) {
+        AnnotationSpec.Builder builder = AnnotationSpec.builder(MinecraftExperimental.class);
+        if (!version.isBlank()) {
+            builder.addMember("value", "$S", version);
+        }
+
         return List.of(
             AnnotationSpec.builder(ApiStatus.Experimental.class).build(),
-            AnnotationSpec.builder(MinecraftExperimental.class)
-                .addMember("value", "$T.$L", MinecraftExperimental.Requires.class, requiredFeatureFlag.name())
-                .build()
+            builder.build()
         );
     }
 
