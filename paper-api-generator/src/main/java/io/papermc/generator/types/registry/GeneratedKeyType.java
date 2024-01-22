@@ -49,8 +49,8 @@ public class GeneratedKeyType<T, A> extends SimpleGenerator {
     private final RegistryKey<A> apiRegistryKey;
     private final boolean publicCreateKeyMethod;
 
-    public GeneratedKeyType(final String keysClassName, final Class<A> apiType, final String pkg, final ResourceKey<? extends Registry<T>> registryKey, final RegistryKey<A> apiRegistryKey, final boolean publicCreateKeyMethod) {
-        super(keysClassName, pkg);
+    public GeneratedKeyType(final String className, final Class<A> apiType, final String pkg, final ResourceKey<? extends Registry<T>> registryKey, final RegistryKey<A> apiRegistryKey, final boolean publicCreateKeyMethod) {
+        super(className, pkg);
         this.apiType = apiType;
         this.registryKey = registryKey;
         this.apiRegistryKey = apiRegistryKey;
