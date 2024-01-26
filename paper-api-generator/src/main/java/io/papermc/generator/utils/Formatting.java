@@ -48,11 +48,24 @@ public final class Formatting {
     public static String formatFeatureFlag(FeatureFlag featureFlag) {
         Set<ResourceLocation> names = FeatureFlags.REGISTRY.toNames(FeatureFlagSet.of(featureFlag));
         String name = names.iterator().next().getPath(); // eww
+        return formatFeatureFlagName(name);
+    }
+
+    public static String formatFeatureFlagName(String name) {
         int updateIndex = name.indexOf("update_");
         if (updateIndex == 0) {
             return "update %s".formatted(name.substring(updateIndex + "update_".length()).replace('_', '.'));
         }
         return name.replace('_', ' ') + " feature";
+    }
+
+    public static String formatTagKey(String tagDir, String resourcePath) {
+        int tagsIndex = resourcePath.indexOf(tagDir);
+        int dotIndex = resourcePath.lastIndexOf('.');
+        if (tagsIndex == -1 || dotIndex == -1) {
+            return "none";
+        }
+        return resourcePath.substring(tagsIndex + tagDir.length() + 1, dotIndex); // tags/registry_key/[tagKey].json
     }
 
     public static Comparator<String> ALPHABETIC_KEY_ORDER = alphabeticKeyOrder(path -> path);
