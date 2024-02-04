@@ -19,7 +19,6 @@ import io.papermc.generator.utils.Formatting;
 import io.papermc.generator.utils.Javadocs;
 import java.util.Comparator;
 import java.util.List;
-import javax.lang.model.element.Modifier;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import org.bukkit.NamespacedKey;
@@ -160,8 +159,8 @@ public class MobGoalGenerator extends SimpleGenerator {
         //</editor-fold>
     };
 
-    public MobGoalGenerator(final String keysClassName, final String pkg) {
-        super(keysClassName, pkg);
+    public MobGoalGenerator(final String className, final String pkg) {
+        super(className, pkg);
     }
 
     @Override
@@ -218,9 +217,8 @@ public class MobGoalGenerator extends SimpleGenerator {
 
         for (final DeprecatedEntry value : DEPRECATED_ENTRIES) {
             TypeName typedKey = ParameterizedTypeName.get(GoalKey.class, value.entity);
-            NamespacedKey key = NamespacedKey.minecraft(value.entryName);
+            String keyPath = value.entryName;
 
-            String keyPath = key.getKey();
             String fieldName = Formatting.formatKeyAsField(keyPath);
             FieldSpec.Builder fieldBuilder = FieldSpec.builder(typedKey, fieldName, PUBLIC, STATIC, FINAL)
                 .addAnnotation(Annotations.deprecatedVersioned(value.removedVersion, value.removalVersion != null))
