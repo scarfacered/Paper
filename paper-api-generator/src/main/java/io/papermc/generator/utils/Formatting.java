@@ -1,13 +1,12 @@
 package io.papermc.generator.utils;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.Optional;
-import java.util.Set;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -15,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlag;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
+import org.apache.commons.lang3.math.NumberUtils;
 
 public final class Formatting {
 
