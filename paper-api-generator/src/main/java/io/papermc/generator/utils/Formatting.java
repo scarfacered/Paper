@@ -89,6 +89,10 @@ public final class Formatting {
         return name;
     }
 
+    public static String quoted(String value) {
+        return String.format("\"%s\"", value);
+    }
+
     public static Comparator<String> ALPHABETIC_KEY_ORDER = alphabeticKeyOrder(path -> path);
 
     public static <T> Comparator<T> alphabeticKeyOrder(Function<T, String> mapper) {
