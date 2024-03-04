@@ -2,11 +2,12 @@ package io.papermc.generator.utils;
 
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import com.google.common.collect.HashBiMap;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -40,16 +41,16 @@ public final class Formatting {
                 continue;
             }
             if (featureFlagSet.contains(flag)) {
-                return formatFeatureFlag(flag);
+                return formatFeatureFlag(flag); // support multiple flags?
             }
         }
         return "";
     }
 
+    private static final Map<FeatureFlag, ResourceLocation> FEATURE_FLAG_NAME = HashBiMap.create(FeatureFlags.REGISTRY.names).inverse();
+
     public static String formatFeatureFlag(FeatureFlag featureFlag) {
-        Set<ResourceLocation> names = FeatureFlags.REGISTRY.toNames(FeatureFlagSet.of(featureFlag));
-        String name = names.iterator().next().getPath(); // eww
-        return formatFeatureFlagName(name);
+        return formatFeatureFlagName(FEATURE_FLAG_NAME.get(featureFlag).getPath());
     }
 
     public static String formatFeatureFlagName(String name) {
@@ -85,6 +86,30 @@ public final class Formatting {
 
     public static String floatStr(float value) {
         return Float.toString(value) + 'F';
+    }
+
+    public static String stripWordOfCamelCaseName(String name, String word, boolean onlyOnce) {
+        String newName = name;
+        int startIndex = 0;
+        while (true) {
+            int baseIndex = newName.indexOf(word, startIndex);
+            if (baseIndex == -1) {
+                return newName;
+            }
+
+            if ((baseIndex > 0 && !Character.isLowerCase(newName.charAt(baseIndex - 1))) ||
+                (baseIndex + word.length() < newName.length() && !Character.isUpperCase(newName.charAt(baseIndex + word.length())))) {
+                startIndex = baseIndex + word.length();
+                continue;
+            }
+
+            newName = newName.substring(0, baseIndex) + newName.substring(baseIndex + word.length());
+            startIndex = baseIndex;
+            if (onlyOnce) {
+                break;
+            }
+        }
+        return newName;
     }
 
     public static Comparator<String> ALPHABETIC_KEY_ORDER = alphabeticKeyOrder(path -> path);
