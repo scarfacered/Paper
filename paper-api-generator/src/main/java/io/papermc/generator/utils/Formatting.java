@@ -1,5 +1,6 @@
 package io.papermc.generator.utils;
 
+import io.papermc.generator.rewriter.ClassNamed;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.Map;
@@ -71,14 +72,29 @@ public final class Formatting {
         return Optional.of(resourcePath.substring(tagsIndex + tagDir.length() + 1, dotIndex)); // namespace/tags/registry_key/[tag_key].json
     }
 
-    public static String incrementalIndent(String unit, Class<?> clazz) {
-        Class<?> parent = clazz.getEnclosingClass();
+    public static int countOccurrences(String value, char match) {
+        int count = 0;
+        int currentMatchIndex = 0;
+        while ((currentMatchIndex = value.indexOf(match, currentMatchIndex)) >= 0) {
+            count++;
+            currentMatchIndex++;
+        }
+        return count;
+    }
+
+    public static String incrementalIndent(String unit, ClassNamed classNamed) {
+        if (classNamed.clazz() == null) {
+            return unit.repeat(countOccurrences(classNamed.dottedNestedName(), '.'));
+        }
+
+        Class<?> parent = classNamed.clazz().getEnclosingClass();
         StringBuilder indentBuilder = new StringBuilder(unit);
         while (parent != null) {
             indentBuilder.append(unit);
             parent = parent.getEnclosingClass();
         }
         return indentBuilder.toString();
+
     }
 
     public static String quoted(String value) {

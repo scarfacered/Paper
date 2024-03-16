@@ -26,13 +26,16 @@ tasks.register<JavaExec>("generate") {
     classpath(sourceSets.main.map { it.runtimeClasspath })
     args(projectDir.toPath().resolve("generated").toString(),
          project(":paper-api").sourceSets["main"].java.srcDirs.first().toPath().toString(),
-         projectDir.toPath().resolve("generatedServerTest").toString())
+         projectDir.toPath().resolve("generatedServerTest").toString(),
+         project(":paper-server").sourceSets["main"].java.srcDirs.first().toString())
 }
 
 tasks.test {
     useJUnitPlatform()
-    systemProperty("paper.generator.rewriter.container", file("generated").toString()) // todo move to the sourceset
+    systemProperty("paper.generator.rewriter.container.api", file("generated").toString()) // todo move to the sourceset
+    systemProperty("paper.generator.rewriter.container.server", file("generatedServerTest").toString()) // todo move to the sourceset
     inputs.dir("generated")
+    inputs.dir("generatedServerTest")
 }
 
 group = "io.papermc.paper"
