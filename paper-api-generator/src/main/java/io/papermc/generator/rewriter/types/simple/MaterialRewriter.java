@@ -395,6 +395,7 @@ public class MaterialRewriter {
             BuiltInRegistries.ITEM.holders().forEach(reference -> {
                 Item item = reference.value().getCraftingRemainingItem();
                 if (item != this.defaultValue.object()) {
+                    //noinspection ConstantConditions
                     String itemKey = BuiltInRegistries.ITEM.getKey(item).getPath().toUpperCase(Locale.ENGLISH);
                     map.put(returnOf(item, itemKey), reference.key().location().getPath().toUpperCase(Locale.ENGLISH));
                 }
