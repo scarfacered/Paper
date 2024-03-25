@@ -121,7 +121,7 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieHorse;
 import org.bukkit.entity.ZombieVillager;
 
-public final class MobGoalNames {
+public final class MobGoalNames { // todo sync with MobGoalHelper ideally this should not be duplicated
 
     private static final Map<Class<? extends Goal>, Class<? extends Mob>> entityClassCache = new HashMap<>();
     public static final Map<Class<? extends net.minecraft.world.entity.Mob>, Class<? extends Mob>> bukkitMap = new HashMap<>();
@@ -238,6 +238,7 @@ public final class MobGoalNames {
     private static final Map<String, String> deobfuscationMap = new HashMap<>();
 
     static {
+        // TODO these kinda should be checked on each release, in case obfuscation changes
         deobfuscationMap.put("abstract_skeleton_1", "abstract_skeleton_melee");
     }
 
