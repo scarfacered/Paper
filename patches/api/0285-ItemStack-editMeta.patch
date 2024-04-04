@@ -5,10 +5,10 @@ Subject: [PATCH] ItemStack#editMeta
 
 
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index 78ea59c8f63b5a71ba092cf1783183bb5d0a3b79..12fac9cf93ae7c6b5c8daced10a4394ad29bebcb 100644
+index 73908f0e8d49377a4fb86c960fde10940998a325..777a52716a7bc70c7cb3f22522dce8dcfb0cdf44 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
-@@ -558,6 +558,50 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
+@@ -559,6 +559,50 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
          return result.ensureServerConversions(); // Paper
      }
  

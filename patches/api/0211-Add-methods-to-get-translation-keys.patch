@@ -478,7 +478,7 @@ index 5bd252c0ae3b09fe141d131360c67bb9bfbf5422..78587d9fabe6371a23a7963917b054db
 +
  }
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index 1f31ff5b85217a1c631f05f43c5a65839a36b26e..1532b3e1b655a9b58588c11b80824ed4cec8c66a 100644
+index 01596d82ec54fdefe0acd7ea776f38c94d4d7d77..221e189503d35b59b364503d0e89dd20d1183c1f 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
 @@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
@@ -487,10 +487,10 @@ index 1f31ff5b85217a1c631f05f43c5a65839a36b26e..1532b3e1b655a9b58588c11b80824ed4
   */
 -public class ItemStack implements Cloneable, ConfigurationSerializable, Translatable, net.kyori.adventure.text.event.HoverEventSource<net.kyori.adventure.text.event.HoverEvent.ShowItem> { // Paper
 +public class ItemStack implements Cloneable, ConfigurationSerializable, Translatable, net.kyori.adventure.text.event.HoverEventSource<net.kyori.adventure.text.event.HoverEvent.ShowItem>, net.kyori.adventure.translation.Translatable { // Paper
+     private static final byte ARRAY_SERIALIZATION_VERSION = 1; // Paper
      private Material type = Material.AIR;
      private int amount = 0;
-     private MaterialData data = null;
-@@ -617,6 +617,7 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
+@@ -618,6 +618,7 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
  
      @Override
      @NotNull
@@ -498,7 +498,7 @@ index 1f31ff5b85217a1c631f05f43c5a65839a36b26e..1532b3e1b655a9b58588c11b80824ed4
      public String getTranslationKey() {
          return Bukkit.getUnsafe().getTranslationKey(this);
      }
-@@ -876,5 +877,16 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
+@@ -944,5 +945,16 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
          ItemMeta itemMeta = getItemMeta();
          return itemMeta != null && itemMeta.hasItemFlag(flag);
      }
