@@ -88,10 +88,10 @@ index 72a29fff4c497a2a66e2746ad42553bcb712e20d..22db1d8645a450308fe91d0cd100c926
      // Paper end
  }
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index 221e189503d35b59b364503d0e89dd20d1183c1f..a85877288fe421c4c834db326f54543855df8441 100644
+index 8638c26f95eb75ea111087c07a5e736ba63dd964..b9d60079bdb7ee0db19b03986ff11c0bdf54d068 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
-@@ -956,5 +956,15 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
+@@ -969,5 +969,15 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
      public @NotNull String translationKey() {
          return Bukkit.getUnsafe().getTranslationKey(this);
      }

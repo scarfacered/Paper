@@ -65,10 +65,10 @@ index 70953573a7bcfa682dbaeaa8e3db0c847b254fdd..041ff387a0f9e8037e2834118ef241dd
      // Paper end
  }
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index 2de0170ddd7c3c9f30cfec0596ede3386b0fb176..0bc0fb38204acb11a48157e8371ff9328e02e8c7 100644
+index 1af246a1149708d333874ba0eda33f9a6743c01b..5f8b7eb48561e9e81e03be3b09c47becc585513a 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
-@@ -1050,5 +1050,19 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
+@@ -1063,5 +1063,19 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
      public boolean canRepair(@NotNull ItemStack toBeRepaired) {
          return Bukkit.getUnsafe().isValidRepairItemStack(toBeRepaired, this);
      }

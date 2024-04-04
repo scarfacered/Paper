@@ -6,10 +6,10 @@ Subject: [PATCH] Allow proper checking of empty item stacks
 This adds a method to check if an item stack is empty or not. This mirrors vanilla's implementation of the same method.
 
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index 0bc0fb38204acb11a48157e8371ff9328e02e8c7..95dc486f5d93113cb016142a66ffd76fb81d66c3 100644
+index 5f8b7eb48561e9e81e03be3b09c47becc585513a..d84f1fa4c9240f579eb02f9e7a76dbcb080ea81a 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
-@@ -1064,5 +1064,24 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
+@@ -1077,5 +1077,24 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
      public @NotNull ItemStack damage(int amount, @NotNull org.bukkit.entity.LivingEntity livingEntity) {
          return livingEntity.damageItemStack(this, amount);
      }

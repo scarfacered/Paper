@@ -22,7 +22,7 @@ index 688fccdbc5cf831008ef2f27db9d15b0921a7561..e4861a8be534bfeae0385f0197261fa6
      // Paper end
  }
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index fd3d4dd231d756d51db0155a4c3ad970c4f456ed..a9ca792de95236535f8b6779fce2875e6c3bd2a9 100644
+index fd3d4dd231d756d51db0155a4c3ad970c4f456ed..331faa8c050ce8d3d10d5c4d91f4cb70e7242312 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
 @@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
@@ -33,7 +33,7 @@ index fd3d4dd231d756d51db0155a4c3ad970c4f456ed..a9ca792de95236535f8b6779fce2875e
      private Material type = Material.AIR;
      private int amount = 0;
      private MaterialData data = null;
-@@ -650,6 +651,97 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
+@@ -650,6 +651,110 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
          return Bukkit.getServer().getItemFactory().ensureServerConversions(this);
      }
  
@@ -62,7 +62,7 @@ index fd3d4dd231d756d51db0155a4c3ad970c4f456ed..a9ca792de95236535f8b6779fce2875e
 +    }
 +
 +    /**
-+     * Serializes a collection of items to raw bytes in NBT.
++     * Serializes a collection of items to raw bytes in NBT. Serializes empty items as null.
 +     * <p>
 +     * If you need a string representation to put into a file, you can for example use {@link java.util.Base64} encoding.
 +     *
@@ -76,7 +76,7 @@ index fd3d4dd231d756d51db0155a4c3ad970c4f456ed..a9ca792de95236535f8b6779fce2875e
 +            output.writeByte(ARRAY_SERIALIZATION_VERSION);
 +            output.writeInt(items.size());
 +            for (final ItemStack item : items) {
-+                if (item == null) {
++                if (item == null || item.isEmpty()) {
 +                    // Ensure the correct order by including empty/null items
 +                    output.writeInt(0);
 +                    continue;
@@ -90,6 +90,19 @@ index fd3d4dd231d756d51db0155a4c3ad970c4f456ed..a9ca792de95236535f8b6779fce2875e
 +        } catch (final java.io.IOException e) {
 +            throw new RuntimeException("Error while writing itemstack", e);
 +        }
++    }
++
++    /**
++     * Serializes a collection of items to raw bytes in NBT. Serializes empty items as null.
++     * <p>
++     * If you need a string representation to put into a file, you can for example use {@link java.util.Base64} encoding.
++     *
++     * @param items items to serialize
++     * @return bytes representing the items in NBT
++     * @see #serializeAsBytes()
++     */
++    public static byte @NotNull [] serializeItemsAsBytes(@Nullable ItemStack @NotNull [] items) {
++        return serializeItemsAsBytes(java.util.Arrays.asList(items));
 +    }
 +
 +    /**
