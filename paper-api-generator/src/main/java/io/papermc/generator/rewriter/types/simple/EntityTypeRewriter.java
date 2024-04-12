@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import io.papermc.generator.rewriter.types.EnumRegistryRewriter;
 import io.papermc.generator.types.goal.MobGoalNames;
 import io.papermc.generator.utils.ClassHelper;
-import io.papermc.generator.utils.Formatting;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.Util;
@@ -14,7 +13,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import org.bukkit.entity.Villager;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -153,6 +151,7 @@ public class EntityTypeRewriter extends EnumRegistryRewriter<EntityType<?>, org.
         map.put(EntityType.ENDERMITE, 67);
         map.put(EntityType.GUARDIAN, 68);
         map.put(EntityType.SHULKER, 69);
+
         map.put(EntityType.PIG, 90);
         map.put(EntityType.SHEEP, 91);
         map.put(EntityType.COW, 92);
@@ -188,14 +187,14 @@ public class EntityTypeRewriter extends EnumRegistryRewriter<EntityType<?>, org.
     @Override
     protected String rewriteEnumValue(Holder.Reference<EntityType<?>> reference) {
         String path = reference.key().location().getPath();
-        final String param;
+        final String value;
         if (!reference.value().canSummon()) {
-            param = "%s, %s.class, %d, false";
+            value = "%s, %s.class, %d, false";
         } else {
-            param = "%s, %s.class, %d";
+            value = "%s, %s.class, %d";
         }
 
-        return param.formatted(quoted(path), toBukkitClass(reference), LEGACY_ID.getOrDefault(reference.value(), -1));
+        return value.formatted(quoted(path), toBukkitClass(reference), LEGACY_ID.getOrDefault(reference.value(), -1));
     }
 
     private String toBukkitClass(Holder.Reference<EntityType<?>> reference) {
