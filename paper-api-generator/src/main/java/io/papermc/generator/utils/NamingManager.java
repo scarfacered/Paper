@@ -4,7 +4,6 @@ import com.google.common.base.CaseFormat;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import javax.lang.model.SourceVersion;
@@ -86,13 +85,21 @@ public class NamingManager {
 
     public static final Pattern FULLY_QUALIFIED_NAME_SEPARATOR = Pattern.compile(".", Pattern.LITERAL);
 
-    public static boolean hasIllegalKeyword(String typeName) {
+    public static boolean isValidName(String typeName) {
+        return isValidName(typeName, keyword -> false);
+    }
+
+    // check only syntax error and keyword but if each id are valid identifier
+    public static boolean isValidName(String typeName, Predicate<String> validKeyword) {
         for (String part : FULLY_QUALIFIED_NAME_SEPARATOR.split(typeName)) {
+            if (part.isEmpty()) {
+                return false;
+            }
             if (SourceVersion.isKeyword(part)) {
-                return true;
+                return validKeyword.test(part);
             }
         }
-        return false;
+        return true;
     }
 
     public static class NameWrapper {
