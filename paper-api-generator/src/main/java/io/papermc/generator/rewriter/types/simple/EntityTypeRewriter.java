@@ -45,27 +45,7 @@ public class EntityTypeRewriter extends EnumRegistryRewriter<EntityType<?>, org.
         ENTITY_GENERIC_TYPES = Map.copyOf(map);
     }
 
-    private static final Map<String, String> FIELD_RENAMES = ImmutableMap.<String, String>builder()
-        .put("ITEM", "DROPPED_ITEM")
-        .put("LEASH_KNOT", "LEASH_HITCH")
-        .put("EYE_OF_ENDER", "ENDER_SIGNAL")
-        .put("POTION", "SPLASH_POTION")
-        .put("EXPERIENCE_BOTTLE", "THROWN_EXP_BOTTLE")
-        .put("TNT", "PRIMED_TNT")
-        .put("FIREWORK_ROCKET", "FIREWORK")
-        .put("COMMAND_BLOCK_MINECART", "MINECART_COMMAND")
-        .put("CHEST_MINECART", "MINECART_CHEST")
-        .put("FURNACE_MINECART", "MINECART_FURNACE")
-        .put("TNT_MINECART", "MINECART_TNT")
-        .put("HOPPER_MINECART", "MINECART_HOPPER")
-        .put("SPAWNER_MINECART", "MINECART_MOB_SPAWNER")
-        .put("MOOSHROOM", "MUSHROOM_COW")
-        .put("SNOW_GOLEM", "SNOWMAN")
-        .put("END_CRYSTAL", "ENDER_CRYSTAL")
-        .put("FISHING_BOBBER", "FISHING_HOOK")
-        .put("LIGHTNING_BOLT", "LIGHTNING")
-        .build();
-
+    // todo check #1328: Rename CraftArrow to CraftAbstractArrow and CraftTippedArrow to CraftArrow to better reflect Bukkit's names
     private static final Map<String, String> CLASS_RENAMES = ImmutableMap.<String, String>builder()
         .put("ExperienceBottle", "ThrownExpBottle")
         .put("EyeOfEnder", "EnderSignal")
@@ -179,12 +159,6 @@ public class EntityTypeRewriter extends EnumRegistryRewriter<EntityType<?>, org.
     }
 
     @Override
-    protected String rewriteEnumName(Holder.Reference<EntityType<?>> reference) {
-        String internalName = super.rewriteEnumName(reference);
-        return FIELD_RENAMES.getOrDefault(internalName, internalName);
-    }
-
-    @Override
     protected String rewriteEnumValue(Holder.Reference<EntityType<?>> reference) {
         String path = reference.key().location().getPath();
         final String value;
@@ -200,7 +174,7 @@ public class EntityTypeRewriter extends EnumRegistryRewriter<EntityType<?>, org.
     private String toBukkitClass(Holder.Reference<EntityType<?>> reference) {
         Class<? extends Entity> internalClass = ENTITY_GENERIC_TYPES.get(reference.value());
         if (Mob.class.isAssignableFrom(internalClass)) {
-            return MobGoalNames.toBukkitClass((Class<? extends Mob>) internalClass).getSimpleName();
+            return MobGoalNames.bukkitMap.get((Class<? extends Mob>) internalClass).getSimpleName();
         }
 
         String className = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, reference.key().location().getPath()); // use the key instead of the internal class name since name match a bit more

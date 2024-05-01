@@ -5,10 +5,10 @@ Subject: [PATCH] cleanup block data
 
 
 diff --git a/src/main/java/net/minecraft/world/level/block/ShulkerBoxBlock.java b/src/main/java/net/minecraft/world/level/block/ShulkerBoxBlock.java
-index 42407c5c0c09cd9d19bc7af92af8868bb038c686..c601b9397de7b42dc2bc2aa88ca90b55f4345013 100644
+index 68431244432a4342041e63218cf7d1eb4eb7ebc0..557e936a815a261411e975f5b7850306e2dc1760 100644
 --- a/src/main/java/net/minecraft/world/level/block/ShulkerBoxBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/ShulkerBoxBlock.java
-@@ -73,7 +73,7 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
+@@ -67,7 +67,7 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
          map.put(Direction.UP, UP_OPEN_AABB);
          map.put(Direction.DOWN, DOWN_OPEN_AABB);
      });
@@ -17,11 +17,24 @@ index 42407c5c0c09cd9d19bc7af92af8868bb038c686..c601b9397de7b42dc2bc2aa88ca90b55
      public static final ResourceLocation CONTENTS = new ResourceLocation("contents");
      @Nullable
      public final DyeColor color;
+diff --git a/src/main/java/net/minecraft/world/level/block/VaultBlock.java b/src/main/java/net/minecraft/world/level/block/VaultBlock.java
+index 2ff0fd5e6019a280c7d139bd5f312d53c79c9ee3..292ca36bbf0490d95b5370768e840654c526d339 100644
+--- a/src/main/java/net/minecraft/world/level/block/VaultBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/VaultBlock.java
+@@ -27,7 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
+ 
+ public class VaultBlock extends BaseEntityBlock {
+     public static final MapCodec<VaultBlock> CODEC = simpleCodec(VaultBlock::new);
+-    public static final Property<VaultState> STATE = BlockStateProperties.VAULT_STATE;
++    public static final Property<VaultState> STATE = BlockStateProperties.VAULT_STATE; // Paper todo test explode when migrated to EnumProperty - see ShulkerBoxBlock comment
+     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+     public static final BooleanProperty OMINOUS = BlockStateProperties.OMINOUS;
+ 
 diff --git a/src/main/java/org/bukkit/craftbukkit/block/data/CraftBlockData.java b/src/main/java/org/bukkit/craftbukkit/block/data/CraftBlockData.java
-index d6480b44f94f1a8d21eb5b5ded2956889883c560..a4f8ce8ec70256403ff162092f8ff51babd395bf 100644
+index d6c4ddd3a4a57c92380672336aa1146810cf892b..e7c7a2ca1b03311484dd56cbc22daebf8ae8898c 100644
 --- a/src/main/java/org/bukkit/craftbukkit/block/data/CraftBlockData.java
 +++ b/src/main/java/org/bukkit/craftbukkit/block/data/CraftBlockData.java
-@@ -363,9 +363,9 @@ public class CraftBlockData implements BlockData {
+@@ -362,9 +362,9 @@ public class CraftBlockData implements BlockData {
          register(net.minecraft.world.level.block.BigDripleafBlock.class, org.bukkit.craftbukkit.block.impl.CraftBigDripleaf::new);
          register(net.minecraft.world.level.block.BigDripleafStemBlock.class, org.bukkit.craftbukkit.block.impl.CraftBigDripleafStem::new);
          register(net.minecraft.world.level.block.AnvilBlock.class, org.bukkit.craftbukkit.block.impl.CraftAnvil::new);
@@ -33,7 +46,7 @@ index d6480b44f94f1a8d21eb5b5ded2956889883c560..a4f8ce8ec70256403ff162092f8ff51b
          register(net.minecraft.world.level.block.BarrelBlock.class, org.bukkit.craftbukkit.block.impl.CraftBarrel::new);
          register(net.minecraft.world.level.block.BarrierBlock.class, org.bukkit.craftbukkit.block.impl.CraftBarrier::new);
          register(net.minecraft.world.level.block.BedBlock.class, org.bukkit.craftbukkit.block.impl.CraftBed::new);
-@@ -375,52 +375,52 @@ public class CraftBlockData implements BlockData {
+@@ -374,52 +374,52 @@ public class CraftBlockData implements BlockData {
          register(net.minecraft.world.level.block.BlastFurnaceBlock.class, org.bukkit.craftbukkit.block.impl.CraftBlastFurnace::new);
          register(net.minecraft.world.level.block.BrewingStandBlock.class, org.bukkit.craftbukkit.block.impl.CraftBrewingStand::new);
          register(net.minecraft.world.level.block.BubbleColumnBlock.class, org.bukkit.craftbukkit.block.impl.CraftBubbleColumn::new);
@@ -104,7 +117,7 @@ index d6480b44f94f1a8d21eb5b5ded2956889883c560..a4f8ce8ec70256403ff162092f8ff51b
          register(net.minecraft.world.level.block.KelpBlock.class, org.bukkit.craftbukkit.block.impl.CraftKelp::new);
          register(net.minecraft.world.level.block.LadderBlock.class, org.bukkit.craftbukkit.block.impl.CraftLadder::new);
          register(net.minecraft.world.level.block.LanternBlock.class, org.bukkit.craftbukkit.block.impl.CraftLantern::new);
-@@ -428,62 +428,62 @@ public class CraftBlockData implements BlockData {
+@@ -427,62 +427,62 @@ public class CraftBlockData implements BlockData {
          register(net.minecraft.world.level.block.LecternBlock.class, org.bukkit.craftbukkit.block.impl.CraftLectern::new);
          register(net.minecraft.world.level.block.LeverBlock.class, org.bukkit.craftbukkit.block.impl.CraftLever::new);
          register(net.minecraft.world.level.block.LoomBlock.class, org.bukkit.craftbukkit.block.impl.CraftLoom::new);
@@ -199,7 +212,7 @@ index d6480b44f94f1a8d21eb5b5ded2956889883c560..a4f8ce8ec70256403ff162092f8ff51b
          register(net.minecraft.world.level.block.BrushableBlock.class, org.bukkit.craftbukkit.block.impl.CraftBrushable::new);
          register(net.minecraft.world.level.block.CalibratedSculkSensorBlock.class, org.bukkit.craftbukkit.block.impl.CraftCalibratedSculkSensor::new);
          register(net.minecraft.world.level.block.CandleBlock.class, org.bukkit.craftbukkit.block.impl.CraftCandle::new);
-@@ -527,9 +527,9 @@ public class CraftBlockData implements BlockData {
+@@ -528,9 +528,9 @@ public class CraftBlockData implements BlockData {
          register(net.minecraft.world.level.block.WeatheringCopperSlabBlock.class, org.bukkit.craftbukkit.block.impl.CraftWeatheringCopperSlab::new);
          register(net.minecraft.world.level.block.WeatheringCopperStairBlock.class, org.bukkit.craftbukkit.block.impl.CraftWeatheringCopperStair::new);
          register(net.minecraft.world.level.block.WeatheringCopperTrapDoorBlock.class, org.bukkit.craftbukkit.block.impl.CraftWeatheringCopperTrapDoor::new);
@@ -3473,10 +3486,10 @@ index 67b212d9395335f59b6f33741aac7a57c823c966..ca232ba24a66d234155fbb706c5b30c6
      }
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Commodore.java b/src/main/java/org/bukkit/craftbukkit/util/Commodore.java
-index bc008773f8cf0d416182152ecfc5a64b70744009..7f8871faafb13f5c5265bb833b096e18d07a82b2 100644
+index a815e9f3db30c33d69e7b8b862c84e5849b1bfea..de4c4a574cf5585da87c001ca24916fe2c8f3241 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Commodore.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/Commodore.java
-@@ -52,7 +52,9 @@ public class Commodore {
+@@ -62,7 +62,9 @@ public class Commodore {
      private static final Map<String, String> RENAMES = Map.of(
              "org/bukkit/entity/TextDisplay$TextAligment", "org/bukkit/entity/TextDisplay$TextAlignment", // SPIGOT-7335
              "org/spigotmc/event/entity/EntityMountEvent", "org/bukkit/event/entity/EntityMountEvent",
@@ -3486,4 +3499,4 @@ index bc008773f8cf0d416182152ecfc5a64b70744009..7f8871faafb13f5c5265bb833b096e18
 +            "org/bukkit/block/data/type/Jigsaw$Orientation", "org/bukkit/block/Orientation" // Paper
      );
  
-     // Paper start - Plugin rewrites
+     private static Map<String, RerouteMethodData> createReroutes(Class<?> clazz) {

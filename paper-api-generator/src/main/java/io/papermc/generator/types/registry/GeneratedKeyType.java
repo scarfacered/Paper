@@ -22,8 +22,8 @@ import net.kyori.adventure.key.Key;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import org.bukkit.MinecraftExperimental;
 import net.minecraft.world.flag.FeatureElement;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -109,9 +109,9 @@ public class GeneratedKeyType<T, A> extends SimpleGenerator {
                 .initializer("$N(key($S))", createMethod.build(), keyPath)
                 .addJavadoc(Javadocs.getVersionDependentField("{@code $L}"), key.location().toString());
 
-            final @Nullable String experimentalValue = this.getExperimentalValue(reference);
-            if (experimentalValue != null) {
-                fieldBuilder.addAnnotations(experimentalAnnotations(experimentalValue));
+            final @Nullable FeatureFlagSet featureFlags = this.getExperimentalValue(reference);
+            if (featureFlags != null) {
+                fieldBuilder.addAnnotations(experimentalAnnotations(featureFlags));
             } else {
                 allExperimental = false;
             }
@@ -119,8 +119,8 @@ public class GeneratedKeyType<T, A> extends SimpleGenerator {
         }
 
         if (allExperimental) {
-            typeBuilder.addAnnotations(experimentalAnnotations(MinecraftExperimental.Requires.UPDATE_1_21));
-            createMethod.addAnnotations(experimentalAnnotations(MinecraftExperimental.Requires.UPDATE_1_21));
+            typeBuilder.addAnnotations(experimentalAnnotations(FeatureFlags.UPDATE_1_21));
+            createMethod.addAnnotations(experimentalAnnotations(FeatureFlags.UPDATE_1_21));
         } else {
             typeBuilder.addAnnotation(EXPERIMENTAL_API_ANNOTATION); // TODO experimental API
         }
@@ -133,12 +133,12 @@ public class GeneratedKeyType<T, A> extends SimpleGenerator {
     }
 
     @Nullable
-    public String getExperimentalValue(final Holder.Reference<T> reference) {
+    public FeatureFlagSet getExperimentalValue(final Holder.Reference<T> reference) {
         if (this.isFilteredRegistry && reference.value() instanceof FeatureElement element && FeatureFlags.isExperimental(element.requiredFeatures())) {
-            return Formatting.formatFeatureFlagSet(element.requiredFeatures());
+            return element.requiredFeatures();
         }
         if (this.experimentalKeys.get().contains(reference.key())) {
-            return Formatting.formatFeatureFlag(FeatureFlags.UPDATE_1_21);
+            return FeatureFlagSet.of(FeatureFlags.UPDATE_1_21);
         }
         return null;
     }

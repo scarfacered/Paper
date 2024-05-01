@@ -17,6 +17,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.flag.FeatureElement;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
@@ -53,10 +54,10 @@ public abstract class EnumRegistryGenerator<T> extends SimpleGenerator {
             String pathKey = resourceKey.location().getPath();
 
             String fieldName = Formatting.formatKeyAsField(pathKey);
-            @Nullable String experimentalValue = this.getExperimentalValue(reference);
+            @Nullable FeatureFlagSet featureFlags = this.getExperimentalValue(reference);
             TypeSpec.Builder builder = TypeSpec.anonymousClassBuilder("$S", pathKey);
-            if (experimentalValue != null) {
-                builder.addAnnotations(Annotations.experimentalAnnotations(experimentalValue));
+            if (featureFlags != null) {
+                builder.addAnnotations(Annotations.experimentalAnnotations(featureFlags));
             }
 
             typeBuilder.addEnumConstant(fieldName, builder.build());
@@ -84,12 +85,12 @@ public abstract class EnumRegistryGenerator<T> extends SimpleGenerator {
     public abstract void addExtras(TypeSpec.Builder builder, FieldSpec keyField);
 
     @Nullable
-    public String getExperimentalValue(Holder.Reference<T> reference) {
+    public FeatureFlagSet getExperimentalValue(Holder.Reference<T> reference) {
         if (this.isFilteredRegistry && reference.value() instanceof FeatureElement element && FeatureFlags.isExperimental(element.requiredFeatures())) {
-            return Formatting.formatFeatureFlagSet(element.requiredFeatures());
+            return element.requiredFeatures();
         }
         if (this.experimentalKeys.get().contains(reference.key())) {
-            return Formatting.formatFeatureFlag(FeatureFlags.UPDATE_1_21);
+            return FeatureFlagSet.of(FeatureFlags.UPDATE_1_21);
         }
         return null;
     }

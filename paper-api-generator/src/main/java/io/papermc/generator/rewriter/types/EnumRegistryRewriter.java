@@ -11,9 +11,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.flag.FeatureElement;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import static io.papermc.generator.utils.Formatting.quoted;
@@ -21,7 +22,7 @@ import static io.papermc.generator.utils.Formatting.quoted;
 public class EnumRegistryRewriter<T, A extends Enum<A>> extends EnumRewriter<Holder.Reference<T>, A> {
 
     private final net.minecraft.core.Registry<T> registry;
-    private final Supplier<List<ResourceKey<T>>> experimentalKeys;
+    private final Supplier<Set<ResourceKey<T>>> experimentalKeys;
     private final boolean isFilteredRegistry;
     private final boolean hasParams;
 
@@ -44,7 +45,7 @@ public class EnumRegistryRewriter<T, A extends Enum<A>> extends EnumRewriter<Hol
 
     @Override
     protected String rewriteEnumName(Holder.Reference<T> reference) {
-        return Formatting.formatPathAsField(reference.key().location().getPath());
+        return Formatting.formatKeyAsField(reference.key().location().getPath());
     }
 
     @Override
@@ -57,19 +58,19 @@ public class EnumRegistryRewriter<T, A extends Enum<A>> extends EnumRewriter<Hol
 
     @Override
     protected void rewriteAnnotation(Holder.Reference<T> reference, StringBuilder builder, SearchMetadata metadata) {
-        String experimentalValue = this.getExperimentalValue(reference);
-        if (experimentalValue != null) {
-            Annotations.experimentalAnnotations(builder, metadata, experimentalValue);
+        FeatureFlagSet featureFlags = this.getExperimentalValue(reference);
+        if (featureFlags != null) {
+            Annotations.experimentalAnnotations(builder, metadata, featureFlags);
         }
     }
 
     @Nullable
-    protected String getExperimentalValue(Holder.Reference<T> reference) {
+    protected FeatureFlagSet getExperimentalValue(Holder.Reference<T> reference) {
         if (this.isFilteredRegistry && reference.value() instanceof FeatureElement element && FeatureFlags.isExperimental(element.requiredFeatures())) {
-            return Formatting.formatFeatureFlagSet(element.requiredFeatures());
+            return element.requiredFeatures();
         }
         if (this.experimentalKeys.get().contains(reference.key())) {
-            return Formatting.formatFeatureFlag(FeatureFlags.UPDATE_1_21);
+            return FeatureFlagSet.of(FeatureFlags.UPDATE_1_21);
         }
         return null;
     }

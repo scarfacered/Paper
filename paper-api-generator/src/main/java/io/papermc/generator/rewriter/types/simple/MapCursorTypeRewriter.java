@@ -1,36 +1,20 @@
 package io.papermc.generator.rewriter.types.simple;
 
-import io.papermc.generator.rewriter.types.EnumCloneRewriter;
-import java.util.Map;
-import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import io.papermc.generator.rewriter.types.EnumRegistryRewriter;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import org.bukkit.map.MapCursor;
 
-public class MapCursorTypeRewriter extends EnumCloneRewriter<MapDecoration.Type, MapCursor.Type> {
-
-    private static final Map<String, String> FIELD_RENAMES = Map.of(
-        "PLAYER", "WHITE_POINTER",
-        "FRAME", "GREEN_POINTER",
-        "RED_MARKER", "RED_POINTER",
-        "BLUE_MARKER", "BLUE_POINTER",
-        "TARGET_X", "WHITE_CROSS",
-        "TARGET_POINT", "RED_MARKER",
-        "PLAYER_OFF_MAP", "WHITE_CIRCLE",
-        "PLAYER_OFF_LIMITS", "SMALL_WHITE_CIRCLE",
-        "MONUMENT", "TEMPLE"
-    );
+public class MapCursorTypeRewriter extends EnumRegistryRewriter<MapDecorationType, MapCursor.Type> {
 
     public MapCursorTypeRewriter(final String pattern) {
-        super(MapCursor.Type.class, MapDecoration.Type.class,pattern, false);
+        super(MapCursor.Type.class, Registries.MAP_DECORATION_TYPE, pattern, true);
     }
 
     @Override
-    protected String rewriteEnumName(MapDecoration.Type type) {
-        String internalName = super.rewriteEnumName(type);
-        return FIELD_RENAMES.getOrDefault(internalName, internalName);
-    }
-
-    @Override
-    protected String rewriteEnumValue(MapDecoration.Type type) {
-        return String.valueOf(type.ordinal());
+    protected String rewriteEnumValue(Holder.Reference<MapDecorationType> reference) {
+        return "%d, %s".formatted(BuiltInRegistries.MAP_DECORATION_TYPE.getId(reference.value()), super.rewriteEnumValue(reference));
     }
 }

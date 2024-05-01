@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.StructureBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.entity.trialspawner.TrialSpawnerState;
+import net.minecraft.world.level.block.entity.vault.VaultState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BambooLeaves;
 import net.minecraft.world.level.block.state.properties.BedPart;
@@ -96,6 +97,7 @@ import org.bukkit.block.data.type.Stairs;
 import org.bukkit.block.data.type.Switch;
 import org.bukkit.block.data.type.TechnicalPiston;
 import org.bukkit.block.data.type.TrialSpawner;
+import org.bukkit.block.data.type.Vault;
 import org.bukkit.block.data.type.Wall;
 import org.jetbrains.annotations.Nullable;
 
@@ -302,6 +304,7 @@ public final class BlockStateMapping {
         .put(BambooLeaves.class, Bamboo.Leaves.class)
         .put(TrialSpawnerState.class, TrialSpawner.State.class)
         .put(FrontAndTop.class, Orientation.class)
+        .put(VaultState.class, Vault.State.class)
         .build();
 
     /*

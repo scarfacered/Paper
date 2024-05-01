@@ -48,8 +48,8 @@ public final class Main {
         LayeredRegistryAccess<RegistryLayer> layers = RegistryLayer.createRegistryAccess();
         layers = WorldLoader.loadAndReplaceLayer(resourceManager, layers, RegistryLayer.WORLDGEN, RegistryDataLoader.WORLDGEN_REGISTRIES);
         REGISTRY_ACCESS = layers.compositeAccess().freeze();
-        final ReloadableServerResources datapack = ReloadableServerResources.loadResources(resourceManager, REGISTRY_ACCESS, FeatureFlags.REGISTRY.allFlags(), Commands.CommandSelection.DEDICATED, 0, MoreExecutors.directExecutor(), MoreExecutors.directExecutor()).join();
-        datapack.updateRegistryTags(REGISTRY_ACCESS);
+        final ReloadableServerResources datapack = ReloadableServerResources.loadResources(resourceManager, layers, FeatureFlags.REGISTRY.allFlags(), Commands.CommandSelection.DEDICATED, 0, MoreExecutors.directExecutor(), MoreExecutors.directExecutor()).join();
+        datapack.updateRegistryTags();
         EXPERIMENTAL_TAGS = TagCollector.grabExperimental(resourceManager);
     }
 

@@ -59,6 +59,7 @@ public class CraftBlockDataGenerator<T extends BlockData> extends StructuredGene
     // for indexed boolean property: get = has
     private static final Map<Property<?>, NamingManager.AccessKeyword> FLUENT_KEYWORD = ImmutableMap.<Property<?>, NamingManager.AccessKeyword>builder()
         .put(BlockStateProperties.ATTACH_FACE, keywordGetSet("getAttached", "setAttached")) // todo remove this once switch methods are gone
+        // .put(BlockStateProperties.VAULT_STATE, keywordGetSet("getTrialSpawnerState", "setTrialSpawnerState")) // todo rename this is super confusing
         .put(BlockStateProperties.EYE, keywordGet("has"))
         .put(BlockStateProperties.BERRIES, keywordGet("has")) // spigot method rename
         // data holder keywords is only needed for the first property they hold

@@ -47,7 +47,7 @@ public abstract class DataPropertyWriterBase<T extends Property<?>> implements D
         Iterator<T> it = this.properties.iterator();
         while (it.hasNext()) {
             T property = it.next();
-            String name = Formatting.formatPathAsField(property.getName());
+            String name = Formatting.formatKeyAsField(property.getName());
             Pair<Class<?>, String> fieldName = PropertyWriter.referenceField(this.blockClass, property, fieldNames);
             code.add("$T.$L, $T.$L", indexClass, name, fieldName.left(), fieldName.right());
             if (it.hasNext()) {

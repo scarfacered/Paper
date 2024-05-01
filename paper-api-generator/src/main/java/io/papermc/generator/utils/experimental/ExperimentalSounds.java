@@ -2,11 +2,11 @@ package io.papermc.generator.utils.experimental;
 
 import com.google.common.base.Suppliers;
 import io.papermc.generator.Main;
-import io.papermc.generator.utils.Formatting;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureElement;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.BundleItem;
 import java.util.Map;
@@ -28,14 +28,14 @@ public final class ExperimentalSounds {
         }, key -> Suppliers.memoize(() -> Main.REGISTRY_ACCESS.registryOrThrow(key))));
 
     private static final Set<String> EXPERIMENTAL_EXCEPTIONS = Set.of(
-        "entity.generic.wind_burst"
+        // add missing keys here for the next big update and toggle the boolean
     );
 
-    public static String findExperimentalValue(ResourceLocation key) {
+    public static FeatureFlagSet findRelatedFeatureFlags(ResourceLocation key) {
         String path = key.getPath();
         // the below way is not perfect, but it tries its best
-        if (EXPERIMENTAL_EXCEPTIONS.contains(path)) {
-            return Formatting.formatFeatureFlag(FeatureFlags.UPDATE_1_21);
+        if (false && EXPERIMENTAL_EXCEPTIONS.contains(path)) {
+            return FeatureFlagSet.of(FeatureFlags.UPDATE_1_21);
         }
 
         String[] fragments = path.split("\\.");
@@ -53,10 +53,10 @@ public final class ExperimentalSounds {
         if (optionalElement.isPresent()) {
             FeatureElement element = optionalElement.get();
             if (element instanceof BundleItem) {
-                return Formatting.formatFeatureFlag(FeatureFlags.BUNDLE); // special case since the item is not locked itself just in the creative menu
+                return FeatureFlagSet.of(FeatureFlags.BUNDLE); // special case since the item is not locked itself just in the creative menu
             }
             if (FeatureFlags.isExperimental(element.requiredFeatures())) {
-                return Formatting.formatFeatureFlagSet(element.requiredFeatures());
+                return element.requiredFeatures();
             }
         }
 

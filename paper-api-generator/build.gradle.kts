@@ -21,7 +21,7 @@ dependencies {
 }
 
 tasks.register<JavaExec>("generate") {
-    dependsOn(tasks.check)
+    // dependsOn(tasks.check) // disable that for now the old generated code test will always fail on mc update otherwise
     mainClass.set("io.papermc.generator.Main")
     classpath(sourceSets.main.map { it.runtimeClasspath })
     args(projectDir.toPath().resolve("generated").toString(),

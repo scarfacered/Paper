@@ -13,7 +13,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -32,6 +31,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.flag.FeatureElement;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
@@ -70,7 +70,7 @@ public class MemoryKeyRewriter extends SearchReplaceRewriter {
     }
 
     private final Registry<MemoryModuleType<?>> registry;
-    private final Supplier<List<ResourceKey<MemoryModuleType<?>>>> experimentalKeys;
+    private final Supplier<Set<ResourceKey<MemoryModuleType<?>>>> experimentalKeys;
     private final boolean isFilteredRegistry;
 
     public MemoryKeyRewriter(final String pattern) {
@@ -127,9 +127,9 @@ public class MemoryKeyRewriter extends SearchReplaceRewriter {
             ResourceKey<MemoryModuleType<?>> resourceKey = reference.key();
             String pathKey = resourceKey.location().getPath();
 
-            String experimentalValue = this.getExperimentalValue(reference);
-            if (experimentalValue != null) {
-                Annotations.experimentalAnnotations(builder, metadata, experimentalValue);
+            FeatureFlagSet featureFlags = this.getExperimentalValue(reference);
+            if (featureFlags != null) {
+                Annotations.experimentalAnnotations(builder, metadata, featureFlags);
             }
 
             final Class<?> apiMemoryType;
@@ -154,17 +154,17 @@ public class MemoryKeyRewriter extends SearchReplaceRewriter {
     }
 
     protected String rewriteFieldName(Holder.Reference<MemoryModuleType<?>> reference) {
-        String internalName = Formatting.formatPathAsField(reference.key().location().getPath());
+        String internalName = Formatting.formatKeyAsField(reference.key().location().getPath());
         return FIELD_RENAMES.getOrDefault(internalName, internalName);
     }
 
     @Nullable
-    protected String getExperimentalValue(Holder.Reference<MemoryModuleType<?>> reference) {
+    protected FeatureFlagSet getExperimentalValue(Holder.Reference<MemoryModuleType<?>> reference) {
         if (this.isFilteredRegistry && reference.value() instanceof FeatureElement element && FeatureFlags.isExperimental(element.requiredFeatures())) {
-            return Formatting.formatFeatureFlagSet(element.requiredFeatures());
+            return element.requiredFeatures();
         }
         if (this.experimentalKeys.get().contains(reference.key())) {
-            return Formatting.formatFeatureFlag(FeatureFlags.UPDATE_1_21);
+            return FeatureFlagSet.of(FeatureFlags.UPDATE_1_21);
         }
         return null;
     }

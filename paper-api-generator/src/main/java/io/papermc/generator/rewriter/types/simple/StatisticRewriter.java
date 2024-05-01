@@ -91,7 +91,7 @@ public class StatisticRewriter {
 
         @Override
         protected String rewriteEnumValue(Holder.Reference<ResourceLocation> reference) {
-            String internalName = Formatting.formatPathAsField(reference.key().location().getPath());
+            String internalName = Formatting.formatKeyAsField(reference.key().location().getPath());
             return "%s.%s".formatted(Stats.class.getSimpleName(), INTERNAL_FIELD_RENAMES.getOrDefault(internalName, internalName));
         }
     }

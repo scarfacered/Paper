@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.ItemTags;
@@ -82,8 +83,8 @@ public class MaterialRewriter {
                 if (blockData == null) {
                     blockData = BlockData.class;
                 }
-                if (equivalentItem.isPresent() && equivalentItem.get().getMaxStackSize() != Item.MAX_STACK_SIZE) {
-                    return "%d, %d, %s.class".formatted(-1, equivalentItem.get().getMaxStackSize(), blockData.getSimpleName());
+                if (equivalentItem.isPresent() && equivalentItem.get().getDefaultMaxStackSize() != Item.DEFAULT_MAX_STACK_SIZE) { // todo fallback with 64
+                    return "%d, %d, %s.class".formatted(-1, equivalentItem.get().getDefaultMaxStackSize(), blockData.getSimpleName());
                 }
                 return "%d, %s.class".formatted(-1, blockData.getSimpleName());
             }
@@ -301,11 +302,14 @@ public class MaterialRewriter {
                 return "%d, %d".formatted(-1, 0); // item+block
             }
 
-            if (item.getMaxStackSize() != Item.MAX_STACK_SIZE) {
-                if (item.getMaxDamage() != 0) {
-                    return "%d, %d, %d".formatted(-1, item.getMaxStackSize(), item.getMaxDamage());
+            int maxStackSize = item.getDefaultMaxStackSize(); // fallback to 64 ? like the test
+            int maxDamage = item.components().getOrDefault(DataComponents.MAX_DAMAGE, 0);
+
+            if (maxStackSize != Item.DEFAULT_MAX_STACK_SIZE) {
+                if (maxDamage != 0) {
+                    return "%d, %d, %d".formatted(-1, maxStackSize, maxDamage);
                 }
-                return "%d, %d".formatted(-1, item.getMaxStackSize());
+                return "%d, %d".formatted(-1, maxStackSize);
             }
 
             return String.valueOf(-1); // id not needed for non legacy material
@@ -346,7 +350,7 @@ public class MaterialRewriter {
 
         @Override
         protected Iterable<String> getCases() {
-            return BuiltInRegistries.ITEM.holders().filter(reference -> reference.value().isEdible())
+            return BuiltInRegistries.ITEM.holders().filter(reference -> reference.value().components().has(DataComponents.FOOD))
                 .map(reference -> reference.key().location().getPath().toUpperCase(Locale.ENGLISH)).sorted(Formatting.ALPHABETIC_KEY_ORDER).toList();
         }
     }

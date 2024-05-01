@@ -8,6 +8,7 @@ import io.papermc.generator.utils.Formatting;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
+import io.papermc.generator.utils.RegistryUtils;
 import io.papermc.generator.utils.TagRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -62,11 +63,11 @@ public class TagRewriter extends SearchReplaceRewriter {
             while (keyIterator.hasNext()) {
                 TagKey<?> tagKey = keyIterator.next();
                 final String keyPath = tagKey.location().getPath();
-                final String fieldName = fieldPrefix + Formatting.formatPathAsField(keyPath);
+                final String fieldName = fieldPrefix + Formatting.formatKeyAsField(keyPath);
 
                 // tag field
                 if (experimentalTags.contains(keyPath)) {
-                    Annotations.experimentalAnnotations(builder, metadata, Formatting.formatFeatureFlagName(Main.EXPERIMENTAL_TAGS.perFeatureFlag().get(tagKey)));
+                    Annotations.experimentalAnnotations(builder, metadata, RegistryUtils.getFeatureFlag(Main.EXPERIMENTAL_TAGS.perFeatureFlag().get(tagKey)));
                 }
 
                 builder.append(metadata.indent());

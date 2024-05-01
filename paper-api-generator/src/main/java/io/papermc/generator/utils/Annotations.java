@@ -5,6 +5,7 @@ import java.util.List;
 import io.papermc.paper.generated.GeneratedFrom;
 import net.minecraft.SharedConstants;
 import net.minecraft.world.flag.FeatureFlag;
+import net.minecraft.world.flag.FeatureFlagSet;
 import org.bukkit.MinecraftExperimental;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -12,15 +13,13 @@ import org.jetbrains.annotations.Nullable;
 
 public final class Annotations {
 
-    public static List<AnnotationSpec> experimentalAnnotations(final FeatureFlag featureFlag) {
-        return experimentalAnnotations(Formatting.formatFeatureFlag(featureFlag));
+    public static List<AnnotationSpec> experimentalAnnotations(final FeatureFlagSet featureFlags) {
+        return experimentalAnnotations(RegistryUtils.onlyOneFlag(featureFlags));
     }
 
-    public static List<AnnotationSpec> experimentalAnnotations(final String value) {
+    public static List<AnnotationSpec> experimentalAnnotations(final FeatureFlag featureFlag) {
         AnnotationSpec.Builder builder = AnnotationSpec.builder(MinecraftExperimental.class);
-        if (!value.isEmpty()) {
-            builder.addMember("value", "$S", value);
-        }
+        builder.addMember("value", "$T.$L", MinecraftExperimental.Requires.class, RegistryUtils.toBukkitAnnotationMember(featureFlag).name());
 
         return List.of(
             AnnotationSpec.builder(ApiStatus.Experimental.class).build(),

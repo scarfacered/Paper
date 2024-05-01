@@ -3,39 +3,27 @@ package org.bukkit.craftbukkit.block.impl;
 import com.google.common.base.Preconditions;
 import io.papermc.paper.generated.GeneratedFrom;
 import java.util.Set;
-import net.minecraft.world.level.block.LeverBlock;
+import net.minecraft.world.level.block.VaultBlock;
+import net.minecraft.world.level.block.entity.vault.VaultState;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.type.Switch;
+import org.bukkit.block.data.type.Vault;
 import org.bukkit.craftbukkit.block.data.CraftBlockData;
 
 @GeneratedFrom("1.20.6")
 @SuppressWarnings("unused")
-public class CraftLever extends CraftBlockData implements Switch {
-    private static final EnumProperty<AttachFace> FACE = LeverBlock.FACE;
+public class CraftVault extends CraftBlockData implements Vault {
+    private static final DirectionProperty FACING = VaultBlock.FACING;
 
-    private static final DirectionProperty FACING = LeverBlock.FACING;
+    private static final BooleanProperty OMINOUS = VaultBlock.OMINOUS;
 
-    private static final BooleanProperty POWERED = LeverBlock.POWERED;
+    private static final EnumProperty<VaultState> STATE = VaultBlock.STATE;
 
-    public CraftLever(BlockState state) {
+    public CraftVault(BlockState state) {
         super(state);
-    }
-
-    @Override
-    public org.bukkit.block.data.FaceAttachable.AttachedFace getAttachedFace() {
-        return this.get(FACE, org.bukkit.block.data.FaceAttachable.AttachedFace.class);
-    }
-
-    @Override
-    public void setAttachedFace(
-            final org.bukkit.block.data.FaceAttachable.AttachedFace attachedFace) {
-        Preconditions.checkArgument(attachedFace != null, "attachedFace cannot be null!");
-        this.set(FACE, attachedFace);
     }
 
     @Override
@@ -56,12 +44,21 @@ public class CraftLever extends CraftBlockData implements Switch {
     }
 
     @Override
-    public boolean isPowered() {
-        return this.get(POWERED);
+    public boolean isOminous() {
+        return this.get(OMINOUS);
     }
 
     @Override
-    public void setPowered(final boolean powered) {
-        this.set(POWERED, powered);
+    public void setOminous(final boolean ominous) {
+        this.set(OMINOUS, ominous);
+    }
+
+    public Vault.State getVaultState() {
+        return this.get(STATE, Vault.State.class);
+    }
+
+    public void setVaultState(final Vault.State state) {
+        Preconditions.checkArgument(state != null, "state cannot be null!");
+        this.set(STATE, state);
     }
 }
