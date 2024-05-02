@@ -27,14 +27,14 @@ public enum PatternType implements Keyed {
     DIAGONAL_UP_RIGHT("rd", "diagonal_up_right"),
     @MinecraftExperimental(Requires.UPDATE_1_21)
     @org.jetbrains.annotations.ApiStatus.Experimental
-    FLOW("null", "flow"),
+    FLOW("flw", "flow"),
     FLOWER("flo", "flower"),
     GLOBE("glb", "globe"),
     GRADIENT("gra", "gradient"),
     GRADIENT_UP("gru", "gradient_up"),
     @MinecraftExperimental(Requires.UPDATE_1_21)
     @org.jetbrains.annotations.ApiStatus.Experimental
-    GUSTER("null", "guster"),
+    GUSTER("gus", "guster"),
     HALF_HORIZONTAL("hh", "half_horizontal"),
     HALF_HORIZONTAL_BOTTOM("hhb", "half_horizontal_bottom"),
     HALF_VERTICAL("vh", "half_vertical"),

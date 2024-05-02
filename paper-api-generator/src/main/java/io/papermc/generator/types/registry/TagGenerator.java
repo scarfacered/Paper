@@ -14,8 +14,8 @@ import io.papermc.generator.types.SimpleGenerator;
 import io.papermc.generator.utils.Annotations;
 import io.papermc.generator.utils.Formatting;
 import io.papermc.generator.utils.Javadocs;
-import io.papermc.generator.utils.RegistryUtils;
 import io.papermc.generator.utils.TagRegistry;
+import io.papermc.generator.utils.experimental.ExperimentalHelper;
 import io.papermc.paper.tag.EntityTags;
 import java.util.Collection;
 import java.util.Locale;
@@ -127,7 +127,7 @@ public class TagGenerator extends SimpleGenerator {
                     .initializer("$T.getTag($L, $T.minecraft($S), $T.class)", Bukkit.class, registryFieldName, NamespacedKey.class, keyPath, tagRegistry.apiType())
                     .addJavadoc(Javadocs.getVersionDependentField("{@code $L}"), tagKey.location().toString());
                 if (experimentalTags.contains(keyPath)) {
-                    fieldBuilder.addAnnotations(experimentalAnnotations(RegistryUtils.getFeatureFlag(Main.EXPERIMENTAL_TAGS.perFeatureFlag().get(tagKey))));
+                    fieldBuilder.addAnnotations(experimentalAnnotations(ExperimentalHelper.getFlagFromName(Main.EXPERIMENTAL_TAGS.perFeatureFlag().get(tagKey))));
                 }
                 typeBuilder.addField(fieldBuilder.build());
             });

@@ -14,6 +14,7 @@ import io.papermc.generator.utils.Annotations;
 import io.papermc.generator.utils.Formatting;
 import io.papermc.generator.utils.Javadocs;
 import io.papermc.generator.utils.RegistryUtils;
+import io.papermc.generator.utils.experimental.ExperimentalHelper.FlagSets;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import java.util.Set;
@@ -109,9 +110,9 @@ public class GeneratedKeyType<T, A> extends SimpleGenerator {
                 .initializer("$N(key($S))", createMethod.build(), keyPath)
                 .addJavadoc(Javadocs.getVersionDependentField("{@code $L}"), key.location().toString());
 
-            final @Nullable FeatureFlagSet featureFlags = this.getExperimentalValue(reference);
-            if (featureFlags != null) {
-                fieldBuilder.addAnnotations(experimentalAnnotations(featureFlags));
+            final @Nullable FeatureFlagSet requiredFeatures = this.getRequiredFeatures(reference);
+            if (requiredFeatures != null) {
+                fieldBuilder.addAnnotations(experimentalAnnotations(requiredFeatures));
             } else {
                 allExperimental = false;
             }
@@ -119,8 +120,8 @@ public class GeneratedKeyType<T, A> extends SimpleGenerator {
         }
 
         if (allExperimental) {
-            typeBuilder.addAnnotations(experimentalAnnotations(FeatureFlags.UPDATE_1_21));
-            createMethod.addAnnotations(experimentalAnnotations(FeatureFlags.UPDATE_1_21));
+            typeBuilder.addAnnotations(experimentalAnnotations(FlagSets.NEXT_UPDATE.get()));
+            createMethod.addAnnotations(experimentalAnnotations(FlagSets.NEXT_UPDATE.get()));
         } else {
             typeBuilder.addAnnotation(EXPERIMENTAL_API_ANNOTATION); // TODO experimental API
         }
@@ -133,12 +134,12 @@ public class GeneratedKeyType<T, A> extends SimpleGenerator {
     }
 
     @Nullable
-    public FeatureFlagSet getExperimentalValue(final Holder.Reference<T> reference) {
+    public FeatureFlagSet getRequiredFeatures(final Holder.Reference<T> reference) {
         if (this.isFilteredRegistry && reference.value() instanceof FeatureElement element && FeatureFlags.isExperimental(element.requiredFeatures())) {
             return element.requiredFeatures();
         }
         if (this.experimentalKeys.get().contains(reference.key())) {
-            return FeatureFlagSet.of(FeatureFlags.UPDATE_1_21);
+            return FlagSets.NEXT_UPDATE.get();
         }
         return null;
     }

@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import io.papermc.generator.utils.experimental.ExperimentalHelper.FlagSets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -29,11 +30,11 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.EmptyBlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.FireBlock;
@@ -83,7 +84,7 @@ public class MaterialRewriter {
                 if (blockData == null) {
                     blockData = BlockData.class;
                 }
-                if (equivalentItem.isPresent() && equivalentItem.get().getDefaultMaxStackSize() != Item.DEFAULT_MAX_STACK_SIZE) { // todo fallback with 64
+                if (equivalentItem.isPresent() && equivalentItem.get().getDefaultMaxStackSize() != Item.DEFAULT_MAX_STACK_SIZE) {
                     return "%d, %d, %s.class".formatted(-1, equivalentItem.get().getDefaultMaxStackSize(), blockData.getSimpleName());
                 }
                 return "%d, %s.class".formatted(-1, blockData.getSimpleName());
@@ -199,17 +200,54 @@ public class MaterialRewriter {
 
     public static class IsInteractable extends SwitchCaseRewriter {
 
+        private static final Class<?>[] USE_WITHOUT_ITEM_PARAMS = {
+            BlockState.class,
+            Level.class,
+            BlockPos.class,
+            Player.class,
+            BlockHitResult.class
+        };
+
+        private static final Class<?>[] USE_ITEM_ON_TYPE_PARAMS = {
+            ItemStack.class,
+            BlockState.class,
+            Level.class,
+            BlockPos.class,
+            Player.class,
+            InteractionHand.class,
+            BlockHitResult.class
+        };
+
         public IsInteractable(final String pattern) {
             super(Material.class, pattern, false);
+        }
+
+        private boolean hasMethod(Class<?> clazz, String name, Class<?>[] params) {
+            try {
+                clazz.getDeclaredMethod(name, params);
+                return true;
+            } catch (NoSuchMethodException ex) {}
+
+            return false;
+        }
+
+        public boolean hasInteractMethods(Class<?> blockClass) {
+            return this.hasMethod(blockClass, "useWithoutItem", USE_WITHOUT_ITEM_PARAMS) ||
+                   this.hasMethod(blockClass, "useItemOn", USE_ITEM_ON_TYPE_PARAMS);
         }
 
         @Override
         protected Iterable<String> getCases() {
             return BuiltInRegistries.BLOCK.holders().filter(reference -> {
-                try {
-                    return !reference.value().getClass().getMethod("use", BlockState.class, net.minecraft.world.level.Level.class, BlockPos.class, Player.class, InteractionHand.class, BlockHitResult.class)
-                        .getDeclaringClass().equals(BlockBehaviour.class);
-                } catch (ReflectiveOperationException ignored) {}
+                Class<?> searchClass = reference.value().getClass();
+                if (IsInteractable.this.hasInteractMethods(searchClass)) {
+                    return true;
+                }
+                if (searchClass.getSuperclass() != BlockBehaviour.class) {
+                    searchClass = searchClass.getSuperclass();
+                    return IsInteractable.this.hasInteractMethods(searchClass);
+                }
+
                 return false;
             }).map(reference -> reference.key().location().getPath().toUpperCase(Locale.ENGLISH)).sorted(Formatting.ALPHABETIC_KEY_ORDER).toList();
         }
@@ -302,7 +340,7 @@ public class MaterialRewriter {
                 return "%d, %d".formatted(-1, 0); // item+block
             }
 
-            int maxStackSize = item.getDefaultMaxStackSize(); // fallback to 64 ? like the test
+            int maxStackSize = item.getDefaultMaxStackSize();
             int maxDamage = item.components().getOrDefault(DataComponents.MAX_DAMAGE, 0);
 
             if (maxStackSize != Item.DEFAULT_MAX_STACK_SIZE) {
@@ -318,7 +356,7 @@ public class MaterialRewriter {
         @Override
         protected void rewriteAnnotation(Holder.Reference<Item> reference, StringBuilder builder, SearchMetadata metadata) {
             if (reference.value() instanceof BundleItem) {
-                Annotations.experimentalAnnotations(builder, metadata, FeatureFlags.BUNDLE); // special case since the item is not locked itself just in the creative menu
+                Annotations.experimentalAnnotations(builder, metadata, FlagSets.BUNDLE.get()); // special case since the item is not locked itself just in the creative menu
             } else {
                 super.rewriteAnnotation(reference, builder, metadata);
             }

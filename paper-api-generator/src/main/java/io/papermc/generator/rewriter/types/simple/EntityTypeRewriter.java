@@ -45,7 +45,6 @@ public class EntityTypeRewriter extends EnumRegistryRewriter<EntityType<?>, org.
         ENTITY_GENERIC_TYPES = Map.copyOf(map);
     }
 
-    // todo check #1328: Rename CraftArrow to CraftAbstractArrow and CraftTippedArrow to CraftArrow to better reflect Bukkit's names
     private static final Map<String, String> CLASS_RENAMES = ImmutableMap.<String, String>builder()
         .put("ExperienceBottle", "ThrownExpBottle")
         .put("EyeOfEnder", "EnderSignal")

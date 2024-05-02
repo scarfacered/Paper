@@ -52,6 +52,7 @@ public class CraftBlockDataGenerator<T extends BlockData> extends StructuredGene
         super(baseClass, blockData.impl(), Types.BASE_PACKAGE + ".block.impl");
         this.blockClass = blockClass;
         this.blockData = blockData;
+        this.printWarningOnMissingOverride = true;
     }
 
     // default keywords: get/set
@@ -59,7 +60,6 @@ public class CraftBlockDataGenerator<T extends BlockData> extends StructuredGene
     // for indexed boolean property: get = has
     private static final Map<Property<?>, NamingManager.AccessKeyword> FLUENT_KEYWORD = ImmutableMap.<Property<?>, NamingManager.AccessKeyword>builder()
         .put(BlockStateProperties.ATTACH_FACE, keywordGetSet("getAttached", "setAttached")) // todo remove this once switch methods are gone
-        // .put(BlockStateProperties.VAULT_STATE, keywordGetSet("getTrialSpawnerState", "setTrialSpawnerState")) // todo rename this is super confusing
         .put(BlockStateProperties.EYE, keywordGet("has"))
         .put(BlockStateProperties.BERRIES, keywordGet("has")) // spigot method rename
         // data holder keywords is only needed for the first property they hold
@@ -114,11 +114,19 @@ public class CraftBlockDataGenerator<T extends BlockData> extends StructuredGene
         TypeSpec.Builder typeBuilder = this.propertyHolder();
 
         for (Property<?> property : this.blockData.properties()) {
-            Pair<Class<?>, String> fieldName = PropertyWriter.referenceField(this.blockClass, property, this.blockData.fieldNames());
+            Pair<Class<?>, String> fieldName = PropertyWriter.referenceFieldFromVar(this.blockClass, property, this.blockData.propertyFields());
 
             PropertyMaker propertyMaker = PropertyMaker.make(property);
 
-            FieldSpec.Builder fieldBuilder = FieldSpec.builder(propertyMaker.getPropertyType(), fieldName.right(), PRIVATE, STATIC, FINAL)
+            final String varName;
+            if (this.blockData.propertyFields().containsKey(property)) {
+                // get the name from the local class or fallback to the generic BlockStateProperties constant name if not found
+                varName = this.blockData.propertyFields().get(property).getName();
+            } else {
+                varName = fieldName.right();
+            }
+
+            FieldSpec.Builder fieldBuilder = FieldSpec.builder(propertyMaker.getPropertyType(), varName, PRIVATE, STATIC, FINAL)
                 .initializer("$T.$L", fieldName.left(), fieldName.right());
             FieldSpec field = fieldBuilder.build();
 
@@ -164,17 +172,16 @@ public class CraftBlockDataGenerator<T extends BlockData> extends StructuredGene
             propertyMaker.addExtras(typeBuilder, field, this, naming);
         }
 
-        for (BlockStateMapping.FieldDataHolder fieldDataHolder : this.blockData.complexFields().keySet()) {
-            Collection<Property<?>> properties = this.blockData.complexFields().get(fieldDataHolder);
+        for (BlockStateMapping.FieldDataHolder fieldDataHolder : this.blockData.complexProperyFields().keySet()) {
+            Collection<Property<?>> properties = this.blockData.complexProperyFields().get(fieldDataHolder);
             Property<?> firstProperty = properties.iterator().next();
 
             PropertyMaker propertyMaker = PropertyMaker.make(firstProperty);
             ConverterBase propertyConverter = Converters.getOrDefault(firstProperty, propertyMaker);
 
-            TypeName propertyType = propertyMaker.getPropertyType();
-            DataPropertyMaker dataPropertyMaker = DataPropertyMaker.make(properties, this.blockClass, fieldDataHolder, propertyType);
+            DataPropertyMaker dataPropertyMaker = DataPropertyMaker.make(properties, this.blockClass, fieldDataHolder);
 
-            FieldSpec field = dataPropertyMaker.getOrCreateField(this.blockData.fieldNames()).build();
+            FieldSpec field = dataPropertyMaker.getOrCreateField(this.blockData.propertyFields()).build();
             typeBuilder.addField(field);
 
             DataConverter converter = DataConverters.getOrThrow(dataPropertyMaker.getType());

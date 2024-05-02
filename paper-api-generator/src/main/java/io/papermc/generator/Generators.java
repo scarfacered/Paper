@@ -7,7 +7,6 @@ import io.papermc.generator.rewriter.types.EnumRegistryRewriter;
 import io.papermc.generator.rewriter.types.simple.CraftBlockDataMapping;
 import io.papermc.generator.rewriter.types.simple.CraftBlockEntityStateMapping;
 import io.papermc.generator.rewriter.types.simple.EntityTypeRewriter;
-import io.papermc.generator.rewriter.types.simple.MapCursorTypeRewriter;
 import io.papermc.generator.rewriter.types.simple.MapPaletteRewriter;
 import io.papermc.generator.rewriter.types.RegistryFieldRewriter;
 import io.papermc.generator.rewriter.types.TagRewriter;
@@ -15,12 +14,13 @@ import io.papermc.generator.rewriter.types.simple.MaterialRewriter;
 import io.papermc.generator.rewriter.types.simple.MemoryKeyRewriter;
 import io.papermc.generator.rewriter.types.simple.PatternTypeRewriter;
 import io.papermc.generator.rewriter.types.simple.StatisticRewriter;
-import io.papermc.generator.utils.experimental.ExperimentalSounds;
+import io.papermc.generator.utils.experimental.ExperimentalHelper;
 import io.papermc.generator.types.registry.GeneratedKeyType;
 import io.papermc.generator.types.SourceGenerator;
 import io.papermc.generator.types.goal.MobGoalGenerator;
 import io.papermc.generator.utils.Formatting;
 import io.papermc.paper.registry.RegistryKey;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -30,6 +30,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import org.bukkit.Art;
 import org.bukkit.Fluid;
 import org.bukkit.GameEvent;
@@ -51,10 +53,12 @@ import org.bukkit.entity.Villager;
 import org.bukkit.entity.Wolf;
 import org.bukkit.generator.structure.Structure;
 import org.bukkit.generator.structure.StructureType;
+import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.inventory.recipe.CookingBookCategory;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
+import org.bukkit.map.MapCursor;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.DisplaySlot;
 
@@ -83,12 +87,12 @@ public interface Generators {
         new EnumRegistryRewriter<>(Fluid.class, Registries.FLUID, "Fluid", false),
         new EnumRegistryRewriter<>(Sound.class, Registries.SOUND_EVENT, "Sound", true) {
             @Override
-            protected FeatureFlagSet getExperimentalValue(Holder.Reference<SoundEvent> reference) {
-                FeatureFlagSet result = super.getExperimentalValue(reference);
+            protected FeatureFlagSet getRequiredFeatures(Holder.Reference<SoundEvent> reference) {
+                FeatureFlagSet result = super.getRequiredFeatures(reference);
                 if (result != null) {
                     return result;
                 }
-                return ExperimentalSounds.findRelatedFeatureFlags(reference.key().location());
+                return ExperimentalHelper.findSoundRelatedFeatureFlags(reference.key().location());
             }
         },
         new EnumRegistryRewriter<>(Biome.class, Registries.BIOME, "Biome", false),
@@ -112,7 +116,12 @@ public interface Generators {
         },
         new EntityTypeRewriter("EntityType"),
         new PatternTypeRewriter("PatternType"),
-        new MapCursorTypeRewriter("MapCursorType"),
+        new EnumRegistryRewriter<>(MapCursor.Type.class, Registries.MAP_DECORATION_TYPE, "MapCursorType", true) {
+            @Override
+            protected String rewriteEnumValue(Holder.Reference<MapDecorationType> reference) {
+                return "%d, %s".formatted(BuiltInRegistries.MAP_DECORATION_TYPE.getId(reference.value()), super.rewriteEnumValue(reference));
+            }
+        },
         new EnumCloneRewriter<>(DisplaySlot.class, net.minecraft.world.scores.DisplaySlot.class, "DisplaySlot", false) {
             @Override
             protected String rewriteEnumName(net.minecraft.world.scores.DisplaySlot slot) {
@@ -139,6 +148,12 @@ public interface Generators {
         new EnumCloneRewriter<>(CraftingBookCategory.class, net.minecraft.world.item.crafting.CraftingBookCategory.class, "CraftingBookCategory", false),
         new EnumCloneRewriter<>(TropicalFish.Pattern.class, net.minecraft.world.entity.animal.TropicalFish.Pattern.class, "TropicalFishPattern", false),
         new EnumCloneRewriter<>(Fox.Type.class, net.minecraft.world.entity.animal.Fox.Type.class, "FoxType", false),
+        new EnumCloneRewriter<>(ItemRarity.class, Rarity.class, "ItemRarity", false) {
+            @Override
+            protected String rewriteEnumValue(final Rarity rarity) {
+                return "%s.%s".formatted(NamedTextColor.class.getCanonicalName(), rarity.color().name());
+            }
+        },
         CompositeRewriter.bind(
             new EnumCloneRewriter<>(Boat.Type.class, net.minecraft.world.entity.vehicle.Boat.Type.class, "BoatType", false) {
                 @Override

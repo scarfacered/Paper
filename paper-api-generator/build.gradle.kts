@@ -21,12 +21,12 @@ dependencies {
 }
 
 tasks.register<JavaExec>("generate") {
-    // dependsOn(tasks.check) // disable that for now the old generated code test will always fail on mc update otherwise
+    dependsOn(tasks.check)
     mainClass.set("io.papermc.generator.Main")
     classpath(sourceSets.main.map { it.runtimeClasspath })
-    args(projectDir.toPath().resolve("generated").toString(),
-         project(":paper-api").sourceSets["main"].java.srcDirs.first().toPath().toString(),
-         projectDir.toPath().resolve("generatedServerTest").toString(),
+    args(file("generated").toString(),
+         project(":paper-api").sourceSets["main"].java.srcDirs.first().toString(),
+         file("generatedServerTest").toString(),
          project(":paper-server").sourceSets["main"].java.srcDirs.first().toString())
 }
 
@@ -40,10 +40,6 @@ tasks {
                 // excludeTags("parser") // comment this line while working on parser related things
             }
         }
-        systemProperty("paper.generator.rewriter.container.api", file("generated").toString()) // todo move to the sourceset
-        systemProperty("paper.generator.rewriter.container.server", file("generatedServerTest").toString()) // todo move to the sourceset
-        inputs.dir("generated")
-        inputs.dir("generatedServerTest")
     }
 
     compileTestJava {

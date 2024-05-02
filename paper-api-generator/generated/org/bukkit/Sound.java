@@ -1291,7 +1291,11 @@ public enum Sound implements Keyed, net.kyori.adventure.sound.Sound.Type { // Pa
     ENTITY_PARROT_FLY("entity.parrot.fly"),
     ENTITY_PARROT_HURT("entity.parrot.hurt"),
     ENTITY_PARROT_IMITATE_BLAZE("entity.parrot.imitate.blaze"),
+    @MinecraftExperimental(Requires.UPDATE_1_21)
+    @org.jetbrains.annotations.ApiStatus.Experimental
     ENTITY_PARROT_IMITATE_BOGGED("entity.parrot.imitate.bogged"),
+    @MinecraftExperimental(Requires.UPDATE_1_21)
+    @org.jetbrains.annotations.ApiStatus.Experimental
     ENTITY_PARROT_IMITATE_BREEZE("entity.parrot.imitate.breeze"),
     ENTITY_PARROT_IMITATE_CREEPER("entity.parrot.imitate.creeper"),
     ENTITY_PARROT_IMITATE_DROWNED("entity.parrot.imitate.drowned"),
@@ -1631,7 +1635,11 @@ public enum Sound implements Keyed, net.kyori.adventure.sound.Sound.Type { // Pa
     ENTITY_ZOMBIFIED_PIGLIN_DEATH("entity.zombified_piglin.death"),
     ENTITY_ZOMBIFIED_PIGLIN_HURT("entity.zombified_piglin.hurt"),
     EVENT_MOB_EFFECT_BAD_OMEN("event.mob_effect.bad_omen"),
+    @MinecraftExperimental(Requires.UPDATE_1_21)
+    @org.jetbrains.annotations.ApiStatus.Experimental
     EVENT_MOB_EFFECT_RAID_OMEN("event.mob_effect.raid_omen"),
+    @MinecraftExperimental(Requires.UPDATE_1_21)
+    @org.jetbrains.annotations.ApiStatus.Experimental
     EVENT_MOB_EFFECT_TRIAL_OMEN("event.mob_effect.trial_omen"),
     EVENT_RAID_HORN("event.raid.horn"),
     INTENTIONALLY_EMPTY("intentionally_empty"),

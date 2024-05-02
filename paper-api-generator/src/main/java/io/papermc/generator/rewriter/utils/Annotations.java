@@ -4,6 +4,7 @@ import io.papermc.generator.rewriter.replace.SearchMetadata;
 import io.papermc.generator.rewriter.context.ImportCollector;
 import io.papermc.generator.utils.ClassHelper;
 import io.papermc.generator.utils.RegistryUtils;
+import io.papermc.generator.utils.experimental.ExperimentalHelper;
 import net.minecraft.world.flag.FeatureFlag;
 import net.minecraft.world.flag.FeatureFlagSet;
 import org.bukkit.MinecraftExperimental;
@@ -37,12 +38,12 @@ public final class Annotations {
     }
 
     public static void experimentalAnnotations(final StringBuilder builder, final SearchMetadata metadata, final FeatureFlagSet featureFlags) {
-        experimentalAnnotations(builder, metadata, RegistryUtils.onlyOneFlag(featureFlags));
+        experimentalAnnotations(builder, metadata, ExperimentalHelper.onlyOneFlag(featureFlags));
     }
 
     public static void experimentalAnnotations(final StringBuilder builder, final SearchMetadata metadata, final FeatureFlag featureFlag) {
         builder.append(metadata.indent()).append(annotation(MinecraftExperimental.class, metadata.importCollector(), "%s.%s".formatted(
-            metadata.importCollector().getShortName(MinecraftExperimental.Requires.class), RegistryUtils.toBukkitAnnotationMember(featureFlag).name()
+            metadata.importCollector().getShortName(MinecraftExperimental.Requires.class), ExperimentalHelper.toBukkitAnnotationMember(featureFlag).name()
         ))).append('\n');
 
         builder.append(metadata.indent()).append(annotation(ApiStatus.Experimental.class, metadata.importCollector())).append('\n');

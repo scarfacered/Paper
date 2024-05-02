@@ -6,6 +6,7 @@ import java.util.Set;
 import net.minecraft.world.level.block.VaultBlock;
 import net.minecraft.world.level.block.entity.vault.VaultState;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -20,7 +21,7 @@ public class CraftVault extends CraftBlockData implements Vault {
 
     private static final BooleanProperty OMINOUS = VaultBlock.OMINOUS;
 
-    private static final EnumProperty<VaultState> STATE = VaultBlock.STATE;
+    private static final EnumProperty<VaultState> STATE = BlockStateProperties.VAULT_STATE;
 
     public CraftVault(BlockState state) {
         super(state);
@@ -53,10 +54,12 @@ public class CraftVault extends CraftBlockData implements Vault {
         this.set(OMINOUS, ominous);
     }
 
+    @Override
     public Vault.State getVaultState() {
         return this.get(STATE, Vault.State.class);
     }
 
+    @Override
     public void setVaultState(final Vault.State state) {
         Preconditions.checkArgument(state != null, "state cannot be null!");
         this.set(STATE, state);

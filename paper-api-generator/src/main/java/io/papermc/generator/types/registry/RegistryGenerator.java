@@ -13,6 +13,7 @@ import io.papermc.generator.utils.Annotations;
 import io.papermc.generator.utils.Formatting;
 import io.papermc.generator.utils.Javadocs;
 import io.papermc.generator.utils.RegistryUtils;
+import io.papermc.generator.utils.experimental.ExperimentalHelper.FlagSets;
 import io.papermc.paper.registry.RegistryKey;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -109,9 +110,9 @@ public abstract class RegistryGenerator<T, A> extends SimpleGenerator {
             } else {
                 fieldBuilder.initializer("$N($S)", fetchMethod.build(), pathKey);
             }
-            @Nullable FeatureFlagSet featureFlags = this.getExperimentalValue(reference);
-            if (featureFlags != null) {
-                fieldBuilder.addAnnotations(Annotations.experimentalAnnotations(featureFlags));
+            @Nullable FeatureFlagSet requiredFeatures = this.getRequiredFeatures(reference);
+            if (requiredFeatures != null) {
+                fieldBuilder.addAnnotations(Annotations.experimentalAnnotations(requiredFeatures));
             }
 
             typeBuilder.addField(fieldBuilder.build());
@@ -129,12 +130,12 @@ public abstract class RegistryGenerator<T, A> extends SimpleGenerator {
     public abstract void addExtras(TypeSpec.Builder builder);
 
     @Nullable
-    public FeatureFlagSet getExperimentalValue(Holder.Reference<T> reference) {
+    public FeatureFlagSet getRequiredFeatures(Holder.Reference<T> reference) {
         if (this.isFilteredRegistry && reference.value() instanceof FeatureElement element && FeatureFlags.isExperimental(element.requiredFeatures())) {
             return element.requiredFeatures();
         }
         if (this.experimentalKeys.get().contains(reference.key())) {
-            return FeatureFlagSet.of(FeatureFlags.UPDATE_1_21);
+            return FlagSets.NEXT_UPDATE.get();
         }
         return null;
     }

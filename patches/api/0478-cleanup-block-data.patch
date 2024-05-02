@@ -409,3 +409,53 @@ index d91a07c7bcb36b3810bb2db89afef1eefd89253d..f00587773935b72d61d05acffb9c1ec8
  
      /**
       * The face to which a switch type block is stuck.
+diff --git a/src/main/java/org/bukkit/block/data/type/Vault.java b/src/main/java/org/bukkit/block/data/type/Vault.java
+index 0acb232e54770d52e5eeb09c36293833b88a5cc5..e2968380db02389f82e2c4c723504ed1d4766513 100644
+--- a/src/main/java/org/bukkit/block/data/type/Vault.java
++++ b/src/main/java/org/bukkit/block/data/type/Vault.java
+@@ -19,16 +19,43 @@ public interface Vault extends Directional {
+      * Gets the value of the 'vault_state' property.
+      *
+      * @return the 'vault_state' value
++     * @deprecated use {@link #getVaultState()}
+      */
+     @NotNull
+-    State getTrialSpawnerState();
++    // Paper start
++    @Deprecated
++    default State getTrialSpawnerState() {
++        return this.getVaultState();
++    }
++    // Paper end
++
++    /**
++     * Sets the value of the 'vault_state' property.
++     *
++     * @param state the new 'vault_state' value
++     * @deprecated use {@link #setVaultState(State)}
++     */
++    // Paper start
++    @Deprecated
++    default void setTrialSpawnerState(@NotNull State state) {
++        this.setVaultState(state);
++    }
++
++    /**
++     * Gets the value of the 'vault_state' property.
++     *
++     * @return the 'vault_state' value
++     */
++    @NotNull
++    State getVaultState();
+ 
+     /**
+      * Sets the value of the 'vault_state' property.
+      *
+      * @param state the new 'vault_state' value
+      */
+-    void setTrialSpawnerState(@NotNull State state);
++    void setVaultState(@NotNull State state);
++    // Paper end
+ 
+     /**
+      * Gets the value of the 'ominous' property.

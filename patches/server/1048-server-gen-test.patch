@@ -27,21 +27,3 @@ index 75194254bc0ca416fb4590ca0886e4c1136cb8e1..557be470c33e5c249daa4f9702efcf67
          excludeDirs.add(projectDir.resolve("src/main/java/excluded"))
      }
  }
-diff --git a/src/main/java/org/bukkit/craftbukkit/block/data/CraftBlockData.java b/src/main/java/org/bukkit/craftbukkit/block/data/CraftBlockData.java
-index e7c7a2ca1b03311484dd56cbc22daebf8ae8898c..14cba0fb59dadc2a85fba7b2a78bfbd852fabf45 100644
---- a/src/main/java/org/bukkit/craftbukkit/block/data/CraftBlockData.java
-+++ b/src/main/java/org/bukkit/craftbukkit/block/data/CraftBlockData.java
-@@ -353,6 +353,13 @@ public class CraftBlockData implements BlockData {
-         return state.max;
-     }
- 
-+    public static final BlockFace[] ROTATION_CYCLE = {
-+        BlockFace.SOUTH, BlockFace.SOUTH_SOUTH_WEST, BlockFace.SOUTH_WEST, BlockFace.WEST_SOUTH_WEST,
-+        BlockFace.WEST, BlockFace.WEST_NORTH_WEST, BlockFace.NORTH_WEST, BlockFace.NORTH_NORTH_WEST,
-+        BlockFace.NORTH, BlockFace.NORTH_NORTH_EAST, BlockFace.NORTH_EAST, BlockFace.EAST_NORTH_EAST,
-+        BlockFace.EAST, BlockFace.EAST_SOUTH_EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_SOUTH_EAST
-+    };
-+
-     //
-     private static final Map<Class<? extends Block>, Function<net.minecraft.world.level.block.state.BlockState, CraftBlockData>> MAP = new HashMap<>();
- 
