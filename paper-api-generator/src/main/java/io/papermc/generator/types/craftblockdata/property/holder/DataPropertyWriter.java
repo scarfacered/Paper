@@ -64,10 +64,7 @@ public class DataPropertyWriter<T extends Property<?>> extends DataPropertyWrite
         } else if (List.class.isAssignableFrom(field.getType())) {
             this.type = DataHolderType.LIST;
             this.indexClass = Integer.TYPE;
-            this.fieldType = ParameterizedTypeName.get(
-                ClassName.get(field.getType()),
-                ClassName.get(((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0])
-            );
+            this.fieldType = TypeName.get(field.getGenericType());
         } else if (Map.class.isAssignableFrom(field.getType()) && field.getGenericType() instanceof ParameterizedType complexType) {
             this.type = DataHolderType.MAP;
             this.internalIndexClass = ClassHelper.eraseType(complexType.getActualTypeArguments()[0]);
