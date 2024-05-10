@@ -12,6 +12,7 @@ import io.papermc.generator.utils.experimental.ExperimentalHelper.FlagSets;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class MemoryKeyRewriter extends SearchReplaceRewriter {
         } catch (ReflectiveOperationException ex) {
             throw new RuntimeException(ex);
         }
-        MEMORY_GENERIC_TYPES = Map.copyOf(map);
+        MEMORY_GENERIC_TYPES = Collections.unmodifiableMap(map);
     }
 
     private final Registry<MemoryModuleType<?>> registry;

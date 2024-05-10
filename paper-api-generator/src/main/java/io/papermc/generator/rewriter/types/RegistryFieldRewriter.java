@@ -3,6 +3,7 @@ package io.papermc.generator.rewriter.types;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Suppliers;
 import io.papermc.generator.Main;
+import io.papermc.generator.rewriter.ClassNamed;
 import io.papermc.generator.rewriter.replace.SearchMetadata;
 import io.papermc.generator.rewriter.replace.SearchReplaceRewriter;
 import io.papermc.generator.rewriter.utils.Annotations;
@@ -17,9 +18,11 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import org.bukkit.NamespacedKey;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,7 +34,7 @@ import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
-public class RegistryFieldRewriter<T, A> extends SearchReplaceRewriter {
+public class RegistryFieldRewriter<T> extends SearchReplaceRewriter {
 
     private static final Map<Class<?>, String> REGISTRY_FIELD_NAMES;
     static {
@@ -46,22 +49,30 @@ public class RegistryFieldRewriter<T, A> extends SearchReplaceRewriter {
                 map.put((Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0], field.getName());
             }
         }
-        REGISTRY_FIELD_NAMES = Map.copyOf(map);
+        REGISTRY_FIELD_NAMES = Collections.unmodifiableMap(map);
     }
 
     private final Registry<T> registry;
     private final Supplier<Set<ResourceKey<T>>> experimentalKeys;
     private final boolean isFilteredRegistry;
-    private final String fetchMethod;
     private final boolean isInterface;
+    private final String fetchMethod;
 
-    public RegistryFieldRewriter(final Class<A> rewriteClass, final ResourceKey<? extends Registry<T>> registryKey, final String pattern, final @Nullable String fetchMethod) {
+    private RegistryFieldRewriter(final ClassNamed rewriteClass, final ResourceKey<? extends Registry<T>> registryKey, final String pattern, final boolean isInterface, final @Nullable String fetchMethod, final Void dummy) {
         super(rewriteClass, pattern, false);
         this.registry = Main.REGISTRY_ACCESS.registryOrThrow(registryKey);
         this.experimentalKeys = Suppliers.memoize(() -> RegistryUtils.collectExperimentalKeys(this.registry));
         this.isFilteredRegistry = FeatureElement.FILTERED_REGISTRIES.contains(registryKey);
-        this.isInterface = rewriteClass.isInterface();
+        this.isInterface = isInterface;
         this.fetchMethod = fetchMethod;
+    }
+
+    public RegistryFieldRewriter(final Class<?> rewriteClass, final ResourceKey<? extends Registry<T>> registryKey, final String pattern, final @Nullable String fetchMethod) {
+        this(new ClassNamed(rewriteClass), registryKey, pattern, rewriteClass.isInterface() && !rewriteClass.isAnnotation(), fetchMethod, null);
+    }
+
+    public RegistryFieldRewriter(final ClassNamed rewriteClass, final ResourceKey<? extends Registry<T>> registryKey, final String pattern, final boolean isInterface, final @NotNull String fetchMethod) {
+        this(rewriteClass, registryKey, pattern, isInterface, fetchMethod, null);
     }
 
     @Override
@@ -96,7 +107,8 @@ public class RegistryFieldRewriter<T, A> extends SearchReplaceRewriter {
             if (!this.isInterface) {
                 builder.append("%s %s %s ".formatted(PUBLIC, STATIC, FINAL));
             }
-            builder.append(this.rewriteClass.simpleName()).append(' ').append(this.rewriteFieldName(reference));
+
+            builder.append(this.rewriteFieldType(reference)).append(' ').append(this.rewriteFieldName(reference));
             builder.append(" = ");
             if (this.fetchMethod == null) {
                 builder.append("%s.%s.get(%s.minecraft(%s))".formatted(org.bukkit.Registry.class.getSimpleName(), REGISTRY_FIELD_NAMES.get(this.rewriteClass.knownClass()), NamespacedKey.class.getSimpleName(), quoted(pathKey)));
@@ -110,6 +122,10 @@ public class RegistryFieldRewriter<T, A> extends SearchReplaceRewriter {
                 builder.append('\n');
             }
         }
+    }
+
+    protected String rewriteFieldType(Holder.Reference<T> reference) {
+        return this.rewriteClass.simpleName();
     }
 
     protected String rewriteFieldName(Holder.Reference<T> reference) {

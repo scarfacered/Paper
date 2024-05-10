@@ -16,6 +16,7 @@ import net.minecraft.world.entity.Mob;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -42,7 +43,7 @@ public class EntityTypeRewriter extends EnumRegistryRewriter<EntityType<?>, org.
         } catch (ReflectiveOperationException ex) {
             throw new RuntimeException(ex);
         }
-        ENTITY_GENERIC_TYPES = Map.copyOf(map);
+        ENTITY_GENERIC_TYPES = Collections.unmodifiableMap(map);
     }
 
     private static final Map<String, String> CLASS_RENAMES = ImmutableMap.<String, String>builder()

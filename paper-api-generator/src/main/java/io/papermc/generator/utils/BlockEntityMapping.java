@@ -1,5 +1,6 @@
 package io.papermc.generator.utils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import com.google.common.base.CaseFormat;
@@ -28,7 +29,7 @@ public final class BlockEntityMapping {
             map.put(key, RENAMES.getOrDefault(implName, implName));
         });
 
-        MAPPING = Map.copyOf(map);
+        MAPPING = Collections.unmodifiableMap(map);
     }
 
 }

@@ -4,10 +4,12 @@ import io.papermc.generator.rewriter.replace.CompositeRewriter;
 import io.papermc.generator.rewriter.SourceRewriter;
 import io.papermc.generator.rewriter.types.EnumCloneRewriter;
 import io.papermc.generator.rewriter.types.EnumRegistryRewriter;
+import io.papermc.generator.rewriter.types.simple.BlockTypeRewriter;
 import io.papermc.generator.rewriter.types.simple.CraftBlockDataMapping;
 import io.papermc.generator.rewriter.types.simple.CraftBlockEntityStateMapping;
 import io.papermc.generator.rewriter.types.simple.CraftPotionUtilRewriter;
 import io.papermc.generator.rewriter.types.simple.EntityTypeRewriter;
+import io.papermc.generator.rewriter.types.simple.ItemTypeRewriter;
 import io.papermc.generator.rewriter.types.simple.MapPaletteRewriter;
 import io.papermc.generator.rewriter.types.RegistryFieldRewriter;
 import io.papermc.generator.rewriter.types.TagRewriter;
@@ -200,6 +202,8 @@ public interface Generators {
         new RegistryFieldRewriter<>(MusicInstrument.class, Registries.INSTRUMENT, "MusicInstrument", "getInstrument"),
         new RegistryFieldRewriter<>(Wolf.Variant.class, Registries.WOLF_VARIANT, "WolfVariant", "getVariant"),
         new MemoryKeyRewriter("MemoryKey"),
+        new ItemTypeRewriter("ItemType"),
+        new BlockTypeRewriter("BlockType"),
         new TagRewriter(Tag.class, "Tag"),
         new MapPaletteRewriter("MapPalette#colors")
     };

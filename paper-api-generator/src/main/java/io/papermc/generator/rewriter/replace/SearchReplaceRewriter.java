@@ -201,7 +201,7 @@ public class SearchReplaceRewriter implements SourceRewriter {
         }
 
         // Files.writeString(path, content.toString(), StandardCharsets.UTF_8); // todo
-        if (this.rewriteClass.knownClass() != null) {
+        if (path.toString().contains("Paper/Paper-API/src/")) {
             createdPath = Main.generatedPath.resolve(filePath);
         } else {
             createdPath = Main.generatedServerPath.resolve(filePath);
@@ -223,20 +223,24 @@ public class SearchReplaceRewriter implements SourceRewriter {
         content.append('\n');
 
         content.append(">".repeat(30));
+        content.append('\n');
+
         this.insert(new SearchMetadata(ImportCollector.NO_OP, INDENT_UNIT, "", -1), content);
+
         content.append("<".repeat(30));
+        content.append('\n');
     }
 
     public void dumpAll(StringBuilder content) {
-        content.append("Configuration :");
-        content.append('\n');
-        content.append("Indent unit : ").append(INDENT_UNIT).append(" (").append(INDENT_SIZE).append(" char)");
-        content.append('\n');
-        content.append("Indent char : ").append(INDENT_CHAR).append(" (").append(INDENT_UNIT.codePointAt(0)).append(")");
+        content.append("Dump of the rewriters that apply to the file : ").append(this.getRelativeFilePath());
         content.append('\n');
         content.append('\n');
 
-        content.append("Dump of the rewriters that apply to the file : ").append(this.getRelativeFilePath());
+        content.append("Configuration :");
+        content.append('\n');
+        content.append("Indent unit : \"").append(INDENT_UNIT).append("\" (").append(INDENT_SIZE).append(" char)");
+        content.append('\n');
+        content.append("Indent char : '").append(INDENT_CHAR).append("' (").append(INDENT_UNIT.codePointAt(0)).append(")");
         content.append('\n');
 
         this.dump(content);

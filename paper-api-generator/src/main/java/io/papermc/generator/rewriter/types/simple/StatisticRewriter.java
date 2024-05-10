@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import io.papermc.generator.rewriter.types.EnumRegistryRewriter;
@@ -123,7 +124,7 @@ public class StatisticRewriter {
             } catch (ReflectiveOperationException ex) {
                 throw new RuntimeException(ex);
             }
-            FIELD_GENERIC_TYPE = Map.copyOf(map);
+            FIELD_GENERIC_TYPE = Collections.unmodifiableMap(map);
         }
 
         public Type(final String pattern) {

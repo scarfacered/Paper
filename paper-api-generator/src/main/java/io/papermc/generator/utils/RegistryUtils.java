@@ -55,7 +55,7 @@ public class RegistryUtils {
                 }
                 map.put((RegistryKey<?>) field.get(null), field.getName());
             }
-            REGISTRY_KEY_FIELD_NAMES = Map.copyOf(map);
+            REGISTRY_KEY_FIELD_NAMES = Collections.unmodifiableMap(map);
         } catch (final ReflectiveOperationException ex) {
             throw new RuntimeException(ex);
         }

@@ -8,6 +8,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -155,7 +156,7 @@ public final class BlockStateMapping {
     static {
         Map<Property<?>, Field> fallbackGenericFields = new HashMap<>();
         fetchProperties(BlockStateProperties.class, (field, property) -> fallbackGenericFields.put(property, field), null);
-        FALLBACK_GENERIC_FIELDS = Map.copyOf(fallbackGenericFields);
+        FALLBACK_GENERIC_FIELDS = Collections.unmodifiableMap(fallbackGenericFields);
     }
 
     public static final Map<Class<? extends Block>, BlockData> MAPPING;
@@ -249,7 +250,7 @@ public final class BlockStateMapping {
 
             map.put(specialBlock, new BlockData(implName, api, properties, propertyFields, complexProperties));
         }
-        MAPPING = Map.copyOf(map);
+        MAPPING = Collections.unmodifiableMap(map);
     }
 
     private static final Map<String, Class<? extends org.bukkit.block.data.BlockData>> NAME_TO_DATA = Map.of(
