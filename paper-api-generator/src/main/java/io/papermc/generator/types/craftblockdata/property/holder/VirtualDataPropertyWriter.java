@@ -24,17 +24,17 @@ import static javax.lang.model.element.Modifier.STATIC;
 
 public class VirtualDataPropertyWriter<T extends Property<?>> extends DataPropertyWriterBase<T> {
 
-    private final VirtualField fieldInfo;
+    private final VirtualField<T> fieldInfo;
     protected Class<?> indexClass;
     protected TypeName fieldType;
 
-    protected VirtualDataPropertyWriter(VirtualField fieldInfo, Collection<T> properties, Class<? extends Block> blockClass) {
+    protected VirtualDataPropertyWriter(VirtualField<T> fieldInfo, Collection<T> properties, Class<? extends Block> blockClass) {
         super(properties, blockClass);
         this.fieldInfo = fieldInfo;
         this.computeTypes(fieldInfo);
     }
 
-    protected void computeTypes(VirtualField fieldInfo) {
+    protected void computeTypes(VirtualField<T> fieldInfo) {
         switch (fieldInfo.getHolderType()) {
             case ARRAY -> {
                 this.indexClass = Integer.TYPE;

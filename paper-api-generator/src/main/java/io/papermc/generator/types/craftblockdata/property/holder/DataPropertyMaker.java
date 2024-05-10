@@ -21,7 +21,7 @@ public interface DataPropertyMaker extends DataAppender {
 
     String getBaseName();
 
-    static <T extends Property<?>> DataPropertyMaker make(Collection<T> properties, Class<? extends Block> blockClass, BlockStateMapping.FieldDataHolder fieldDataHolder) {
+    static <T extends Property<?>> DataPropertyMaker make(Collection<T> properties, Class<? extends Block> blockClass, BlockStateMapping.FieldDataHolder<T> fieldDataHolder) {
         if (fieldDataHolder.field() == null) {
             return new VirtualDataPropertyWriter<>(fieldDataHolder.virtualField(), properties, blockClass);
         }

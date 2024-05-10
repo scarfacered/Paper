@@ -17,8 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static io.papermc.generator.rewriter.replace.CommentMarker.EMPTY_MARKER;
-import static io.papermc.generator.rewriter.replace.SearchReplaceRewriter.INDENT_CHAR;
-import static io.papermc.generator.rewriter.replace.SearchReplaceRewriter.INDENT_SIZE;
+import static io.papermc.generator.SourceWriter.INDENT_CHAR;
+import static io.papermc.generator.SourceWriter.INDENT_SIZE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Disabled("This test should run at a different lifecycle") // todo

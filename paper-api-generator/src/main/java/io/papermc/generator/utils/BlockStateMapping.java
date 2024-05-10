@@ -19,7 +19,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.reflect.TypeToken;
 import io.papermc.generator.types.craftblockdata.property.holder.VirtualField;
-import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -108,14 +107,14 @@ public final class BlockStateMapping {
 
     public static final String PIPE_FIELD_NAME = "PROPERTY_BY_DIRECTION";
 
-    public record BlockData(String impl, @Nullable Class<? extends org.bukkit.block.data.BlockData> api, Collection<Property<?>> properties, Map<Property<?>, Field> propertyFields, Multimap<FieldDataHolder, Property<?>> complexProperyFields) {
+    public record BlockData(String impl, @Nullable Class<? extends org.bukkit.block.data.BlockData> api, Collection<Property<?>> properties, Map<Property<?>, Field> propertyFields, Multimap<FieldDataHolder<?>, Property<?>> complexProperyFields) {
     }
 
-    public record FieldDataHolder(@Nullable Field field, @Nullable VirtualField virtualField) { // might be Either
+    public record FieldDataHolder<T extends Property<?>>(@Nullable Field field, @Nullable VirtualField<T> virtualField) { // might be Either
     }
 
-    private static FieldDataHolder fieldHolder(Field field) {
-        return new FieldDataHolder(field, null);
+    private static <T extends Property<?>> FieldDataHolder<T> fieldHolder(Field field) {
+        return new FieldDataHolder<>(field, null);
     }
 
     private static final Map<String, String> API_RENAMES = ImmutableMap.<String, String>builder()
@@ -141,7 +140,7 @@ public final class BlockStateMapping {
     );
 
     // virtual data that doesn't exist as constant in the source but still organized this way in the api
-    public static final ImmutableMultimap<Class<?>, VirtualField<? extends Property<? extends Comparable<?>>>> VIRTUAL_NODES = ImmutableMultimap.<Class<?>, VirtualField<? extends Property<? extends Comparable<?>>>>builder()
+    public static final ImmutableMultimap<Class<?>, VirtualField<? extends Property<?>>> VIRTUAL_NODES = ImmutableMultimap.<Class<?>, VirtualField<? extends Property<? extends Comparable<?>>>>builder()
         .put(WallBlock.class,
             VirtualField.createMap("PROPERTY_BY_FACE", BlockFace.class, new TypeToken<EnumProperty<WallSide>>() {}, "HEIGHT")
             .withValues(List.of(
@@ -175,7 +174,7 @@ public final class BlockStateMapping {
             Collection<Property<?>> properties = new ArrayList<>(entry.getValue());
 
             Map<Property<?>, Field> propertyFields = new HashMap<>(properties.size());
-            Multimap<FieldDataHolder, Property<?>> complexProperties = ArrayListMultimap.create();
+            Multimap<FieldDataHolder<?>, Property<?>> complexProperties = ArrayListMultimap.create();
 
             fetchProperties(specialBlock, (field, property) -> {
                 if (properties.contains(property)) {
@@ -207,7 +206,7 @@ public final class BlockStateMapping {
             // virtual nodes
             if (VIRTUAL_NODES.containsKey(specialBlock)) {
                 for (VirtualField<?> virtualField : VIRTUAL_NODES.get(specialBlock)) {
-                    FieldDataHolder field = new FieldDataHolder(null, virtualField);
+                    FieldDataHolder<?> field = new FieldDataHolder<>(null, virtualField);
                     for (Property<?> property : virtualField.getValues()) {
                         if (properties.remove(property)) {
                             complexProperties.put(field, property);

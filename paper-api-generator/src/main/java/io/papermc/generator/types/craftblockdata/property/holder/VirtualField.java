@@ -32,6 +32,10 @@ public class VirtualField<T extends Property<? extends Comparable<?>>> {
         return new VirtualField.FieldValue<>(name, valueType, DataHolderType.MAP, baseName, keyClass);
     }
 
+    public static <T extends Property<? extends Comparable<?>>> VirtualField.FieldValue<T> createMap(String name, Class<?> keyClass, Class<T> valueType, String baseName) {
+        return createMap(name, keyClass, TypeToken.of(valueType), baseName);
+    }
+
     public String getName() {
         return this.name;
     }

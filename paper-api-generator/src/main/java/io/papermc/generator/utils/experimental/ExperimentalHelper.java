@@ -53,18 +53,6 @@ public final class ExperimentalHelper {
             return null;
         }
 
-        Registry<? extends FeatureElement> registry = filteredRegistry.get();
-        Optional<? extends FeatureElement> optionalElement = registry.getOptional(new ResourceLocation(ResourceLocation.DEFAULT_NAMESPACE, fragments[1]));
-        if (optionalElement.isPresent()) {
-            FeatureElement element = optionalElement.get();
-            if (element instanceof BundleItem) {
-                return FlagSets.BUNDLE.get(); // special case since the item is not locked itself just in the creative menu
-            }
-            if (FeatureFlags.isExperimental(element.requiredFeatures())) {
-                return element.requiredFeatures();
-            }
-        }
-
         Optional<FeatureFlagSet> requiredFeatures = getRequiredFeatures(filteredRegistry.get(), fragments[1]);
         if (fragments[fragments.length - 2].equals("imitate")) { // parrot and note block
             requiredFeatures = requiredFeatures.or(() -> getRequiredFeatures(BuiltInRegistries.ENTITY_TYPE, fragments[fragments.length - 1]));

@@ -26,7 +26,7 @@ public abstract class SimpleGenerator implements SourceGenerator {
     public void writeToFile(Path parent) throws IOException {
         JavaFile.Builder builder = JavaFile.builder(this.packageName, this.getTypeSpec());
         this.file(builder)
-            .indent("    ")
+            .indent(INDENT_UNIT)
             .skipJavaLangImports(true);
 
         builder.build().writeTo(parent, StandardCharsets.UTF_8);

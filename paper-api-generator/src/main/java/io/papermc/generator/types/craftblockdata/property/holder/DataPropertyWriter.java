@@ -2,7 +2,6 @@ package io.papermc.generator.types.craftblockdata.property.holder;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -57,27 +56,27 @@ public class DataPropertyWriter<T extends Property<?>> extends DataPropertyWrite
     }
 
     protected void computeTypes(Field field) {
+        this.fieldType = TypeName.get(field.getGenericType());
+
         if (field.getType().isArray()) {
             this.type = DataHolderType.ARRAY;
             this.indexClass = Integer.TYPE;
-            this.fieldType = ArrayTypeName.of(ClassName.get(field.getType().getComponentType()));
         } else if (List.class.isAssignableFrom(field.getType())) {
             this.type = DataHolderType.LIST;
             this.indexClass = Integer.TYPE;
-            this.fieldType = TypeName.get(field.getGenericType());
         } else if (Map.class.isAssignableFrom(field.getType()) && field.getGenericType() instanceof ParameterizedType complexType) {
             this.type = DataHolderType.MAP;
             this.internalIndexClass = ClassHelper.eraseType(complexType.getActualTypeArguments()[0]);
             if (this.internalIndexClass.isEnum()) {
                 this.indexClass = BlockStateMapping.ENUM_BRIDGE.getOrDefault(this.internalIndexClass, (Class<? extends Enum<?>>) this.internalIndexClass);
+                this.fieldType = ParameterizedTypeName.get(
+                    ClassName.get(field.getType()),
+                    ClassName.get(this.indexClass),
+                    ClassName.get(complexType.getActualTypeArguments()[1])
+                );
             } else {
                 this.indexClass = this.internalIndexClass;
-            };
-            this.fieldType = ParameterizedTypeName.get(
-                ClassName.get(field.getType()),
-                ClassName.get(this.indexClass),
-                ClassName.get(complexType.getActualTypeArguments()[1])
-            );
+            }
         } else {
             throw new IllegalStateException("Don't know how to turn " + field + " into api");
         }
