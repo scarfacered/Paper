@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import io.papermc.generator.utils.experimental.ExperimentalHelper;
 import io.papermc.generator.utils.experimental.ExperimentalHelper.FlagSets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -30,6 +31,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -354,11 +356,11 @@ public class MaterialRewriter {
         }
 
         @Override
-        protected void rewriteAnnotation(Holder.Reference<Item> reference, StringBuilder builder, SearchMetadata metadata) {
+        protected FeatureFlagSet getRequiredFeatures(Holder.Reference<Item> reference) {
             if (reference.value() instanceof BundleItem) {
-                Annotations.experimentalAnnotations(builder, metadata, FlagSets.BUNDLE.get()); // special case since the item is not locked itself just in the creative menu
+                return ExperimentalHelper.FlagSets.BUNDLE.get(); // special case since the item is not locked itself just in the creative menu
             } else {
-                super.rewriteAnnotation(reference, builder, metadata);
+                return super.getRequiredFeatures(reference);
             }
         }
     }

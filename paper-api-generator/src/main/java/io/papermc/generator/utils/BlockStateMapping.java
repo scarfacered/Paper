@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -168,7 +169,7 @@ public final class BlockStateMapping {
             }
         }
 
-        Map<Class<? extends Block>, BlockData> map = new HashMap<>();
+        Map<Class<? extends Block>, BlockData> map = new IdentityHashMap<>();
         for (Map.Entry<Class<? extends Block>, Collection<Property<?>>> entry : specialBlocks.entrySet()) {
             Class<? extends Block> specialBlock = entry.getKey();
 

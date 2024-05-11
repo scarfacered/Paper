@@ -552,7 +552,7 @@ index 4ce888688d04eb0c4b2261a6474df870e7d2bb00..9e6d231b783fcb54c63cb80f12b598e6
      private final Type type;
      private final NamespacedKey key;
 diff --git a/src/main/java/org/bukkit/Tag.java b/src/main/java/org/bukkit/Tag.java
-index 511980c6d190fb80e23d0015dee5ee170bb673ac..5decb296e11ac3df472c518095f229ed3bb0ed1c 100644
+index 511980c6d190fb80e23d0015dee5ee170bb673ac..7a70d92cfec6ef9d7fdd516a3c7d8c096cce0582 100644
 --- a/src/main/java/org/bukkit/Tag.java
 +++ b/src/main/java/org/bukkit/Tag.java
 @@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
@@ -600,7 +600,18 @@ index 511980c6d190fb80e23d0015dee5ee170bb673ac..5decb296e11ac3df472c518095f229ed
      /**
       * Vanilla item tag representing all cow food.
       */
-@@ -1147,13 +1129,6 @@ public interface Tag<T extends Keyed> extends Keyed {
+@@ -1050,10 +1032,6 @@ public interface Tag<T extends Keyed> extends Keyed {
+      * Vanilla item tag representing all shovels.
+      */
+     Tag<Material> ITEMS_SHOVELS = Bukkit.getTag(REGISTRY_ITEMS, NamespacedKey.minecraft("shovels"), Material.class);
+-    /**
+-     * Vanilla item tag representing all tools.
+-     */
+-    Tag<Material> ITEMS_TOOLS = Bukkit.getTag(REGISTRY_ITEMS, NamespacedKey.minecraft("tools"), Material.class);
+     /**
+      * Vanilla item tag representing all items which break decorated pots.
+      */
+@@ -1147,13 +1125,6 @@ public interface Tag<T extends Keyed> extends Keyed {
       * the wearer.
       */
      Tag<Material> FREEZE_IMMUNE_WEARABLES = Bukkit.getTag(REGISTRY_ITEMS, NamespacedKey.minecraft("freeze_immune_wearables"), Material.class);
@@ -614,7 +625,7 @@ index 511980c6d190fb80e23d0015dee5ee170bb673ac..5decb296e11ac3df472c518095f229ed
      /**
       * Vanilla item tag representing all items which are preferred for
       * harvesting clusters (unused).
-@@ -1236,12 +1211,6 @@ public interface Tag<T extends Keyed> extends Keyed {
+@@ -1236,12 +1207,6 @@ public interface Tag<T extends Keyed> extends Keyed {
       */
      @org.jetbrains.annotations.ApiStatus.Experimental @MinecraftExperimental(value = MinecraftExperimental.Requires.UPDATE_1_21) // Paper - add missing annotation
      Tag<EntityType> ENTITY_TYPES_DEFLECTS_PROJECTILES = Bukkit.getTag(REGISTRY_ENTITY_TYPES, NamespacedKey.minecraft("deflects_projectiles"), EntityType.class);
@@ -627,7 +638,7 @@ index 511980c6d190fb80e23d0015dee5ee170bb673ac..5decb296e11ac3df472c518095f229ed
      /**
       * Vanilla tag representing entities which can turn in boats.
       */
-@@ -1326,6 +1295,39 @@ public interface Tag<T extends Keyed> extends Keyed {
+@@ -1326,6 +1291,48 @@ public interface Tag<T extends Keyed> extends Keyed {
       */
      Tag<GameEvent> GAME_EVENT_ALLAY_CAN_LISTEN = Bukkit.getTag(REGISTRY_GAME_EVENTS, NamespacedKey.minecraft("allay_can_listen"), GameEvent.class);
      // Paper end
@@ -651,6 +662,15 @@ index 511980c6d190fb80e23d0015dee5ee170bb673ac..5decb296e11ac3df472c518095f229ed
 +     */
 +    @Deprecated
 +    Tag<Material> FOX_FOOD = ITEMS_FOX_FOOD;
++    /**
++     * Vanilla item tag representing all tools.
++     *
++     * @deprecated removed in Minecraft 1.20.5. Do not use. Will be removed at a later date. Until then,
++     * this constant now acts as a reference to {@link #ITEMS_BREAKS_DECORATED_POTS} which largely shares
++     * the same contents of the old "minecraft:tools" tag.
++     */
++    @Deprecated(forRemoval = true)
++    Tag<Material> ITEMS_TOOLS = ITEMS_BREAKS_DECORATED_POTS;
 +    /**
 +     * Vanilla item tag representing all items which tempt axolotls.
 +     *

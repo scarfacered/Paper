@@ -365,6 +365,8 @@ End comment marker : // Paper end - Generated/ItemType
 
     ItemType.Typed<ItemMeta> BUDDING_AMETHYST = getItemType("budding_amethyst");
 
+    @org.bukkit.MinecraftExperimental(org.bukkit.MinecraftExperimental.Requires.BUNDLE)
+    @org.jetbrains.annotations.ApiStatus.Experimental
     ItemType.Typed<ItemMeta> BUNDLE = getItemType("bundle");
 
     ItemType.Typed<ItemMeta> BURN_POTTERY_SHERD = getItemType("burn_pottery_sherd");

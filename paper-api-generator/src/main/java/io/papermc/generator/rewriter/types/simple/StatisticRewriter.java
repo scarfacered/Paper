@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import io.papermc.generator.rewriter.types.EnumRegistryRewriter;
 import io.papermc.generator.rewriter.types.Types;
@@ -107,7 +108,7 @@ public class StatisticRewriter {
 
         private static final Map<StatType<?>, Class<?>> FIELD_GENERIC_TYPE;
         static {
-            final Map<StatType<?>, Class<?>> map = new HashMap<>();
+            final Map<StatType<?>, Class<?>> map = new IdentityHashMap<>();
 
             try {
                 for (final Field field : Stats.class.getDeclaredFields()) {
